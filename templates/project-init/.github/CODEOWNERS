@@ -1,0 +1,14 @@
+# CODEOWNERS — main への PR で必須となるレビュワー（= 二重レビューゲートの「レビュワーエージェント」側）。
+#
+# branch protection で "Require review from Code Owners" を有効化すると、
+# ここで指定したオーナーの approve がマージ必須になる。
+# これにより「レビュワーエージェント（人間/AIレビュワーの最終承認）× Amazon Q」の二重構造が成立する。
+#
+# 使い方:
+#   1. 下の @OWNER_PLACEHOLDER を実際の GitHub ユーザー名（例: @your-handle）または
+#      チーム（例: @your-org/reviewers）に置き換える。
+#   2. scripts/setup-branch-protection.sh を実行して main を保護する。
+#
+# 1名運用（野口Profile）の場合は自分自身を指定する。
+
+* @OWNER_PLACEHOLDER

@@ -1,0 +1,144 @@
+name: PR Review Gate (main)
+
+# main への Pull Request に対する「二重レビューゲート」のうち、
+# Amazon Q Developer 側のゲートを担う。
+#
+# 設計（野口さんフレームワーク）:
+#   - 二重構造の片方 = レビュワーエージェント（開発中の Phase 14 implementation-reviewer
+#     ＋ PR での Code Owner approve 必須）。これは branch protection + CODEOWNERS で担保する。
+#   - もう片方 = この Amazon Q Developer ゲート。
+#
+# 挙動:
+#   - PR 作成後、Amazon Q Developer（GitHub App）の自動レビューが付くまで
+#     「少し時間をおいて」ポーリングする（既定: 3分間隔 × 3回）。
+#   - Amazon Q のレビューを検出したらパス（CHANGES_REQUESTED の場合のみブロック）。
+#   - 3回ポーリングしても Amazon Q のレビューが無ければ fail-open でパスする
+#     （プレビュー版で Q が無反応でも PR を永久ブロックしないため）。
+#
+# 必須化（パス必須）にするには:
+#   - branch protection で本ジョブ `amazon-q-review-gate` を required status check に指定する。
+#   - 手順は .github/PR_REVIEW_GATE.md / scripts/setup-branch-protection.sh を参照。
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review]
+
+concurrency:
+  group: pr-review-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  amazon-q-review-gate:
+    name: amazon-q-review-gate
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 15
+    env:
+      # Amazon Q Developer の GitHub ボットをログイン名で識別する正規表現（大小無視でマッチ）。
+      # プレビュー版のため正確なボットログイン名は環境で異なりうる。実際の Q レビューに
+      # 出てくるアカウント名を確認したら、ここを固定値（例: 'amazon-q-developer\[bot\]'）に
+      # 絞ると誤検出を防げる。
+      Q_BOT_LOGIN_REGEX: 'amazon-?q|q-developer'
+      # ポーリング回数と間隔（秒）。既定: 3分間隔 × 3回（最大 ~6分待機）。
+      POLL_ATTEMPTS: '3'
+      POLL_INTERVAL_SECONDS: '180'
+      # Amazon Q が CHANGES_REQUESTED を出したらゲートを fail させる（true 推奨）。
+      ENFORCE_CHANGES_REQUESTED: 'true'
+      # 既定回数ポーリングしても Q のレビューが無い場合にパスする（fail-open）。
+      # false にすると Q が必ずレビューするまでマージできない厳格モードになる。
+      PASS_ON_TIMEOUT: 'true'
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Wait for and evaluate Amazon Q Developer review
+        run: |
+          set -euo pipefail
+
+          echo "PR #${PR_NUMBER} の Amazon Q Developer レビューを待機します"
+          echo "（${POLL_ATTEMPTS} 回 × ${POLL_INTERVAL_SECONDS} 秒間隔 / ボット検出パターン: /${Q_BOT_LOGIN_REGEX}/i）"
+
+          found=false
+          blocking=false
+
+          count_q() {
+            # stdin: GitHub API の配列 JSON。.user.login が Q_BOT_LOGIN_REGEX にマッチする件数を出力。
+            jq --arg re "$Q_BOT_LOGIN_REGEX" \
+              '[.[] | select((.user.login // "") | test($re; "i"))] | length'
+          }
+
+          for attempt in $(seq 1 "$POLL_ATTEMPTS"); do
+            echo "::group::ポーリング ${attempt}/${POLL_ATTEMPTS}"
+
+            reviews_json="$(gh api "repos/${REPO}/pulls/${PR_NUMBER}/reviews" --paginate 2>/dev/null || echo '[]')"
+            issue_comments_json="$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" --paginate 2>/dev/null || echo '[]')"
+            review_comments_json="$(gh api "repos/${REPO}/pulls/${PR_NUMBER}/comments" --paginate 2>/dev/null || echo '[]')"
+
+            q_reviews="$(echo "$reviews_json" | jq --arg re "$Q_BOT_LOGIN_REGEX" \
+              '[.[] | select((.user.login // "") | test($re; "i"))]')"
+            q_review_count="$(echo "$q_reviews" | jq 'length')"
+            q_issue_count="$(echo "$issue_comments_json" | count_q)"
+            q_revcomment_count="$(echo "$review_comments_json" | count_q)"
+            total=$(( q_review_count + q_issue_count + q_revcomment_count ))
+
+            echo "Amazon Q 由来: reviews=${q_review_count} / issue_comments=${q_issue_count} / review_comments=${q_revcomment_count}"
+
+            if [ "$total" -gt 0 ]; then
+              found=true
+              changes_requested="$(echo "$q_reviews" | jq '[.[] | select(.state == "CHANGES_REQUESTED")] | length')"
+              [ "$changes_requested" -gt 0 ] && blocking=true
+              echo "Amazon Q のレビューを検出しました（CHANGES_REQUESTED=${changes_requested}）"
+              echo "::endgroup::"
+              break
+            fi
+
+            echo "::endgroup::"
+            if [ "$attempt" -lt "$POLL_ATTEMPTS" ]; then
+              echo "まだレビューがありません。${POLL_INTERVAL_SECONDS} 秒待機します…"
+              sleep "$POLL_INTERVAL_SECONDS"
+            fi
+          done
+
+          {
+            echo "## Amazon Q レビューゲート結果"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$found" != "true" ]; then
+            if [ "$PASS_ON_TIMEOUT" = "true" ]; then
+              echo "⏱️ ${POLL_ATTEMPTS} 回ポーリングしましたが Amazon Q のレビューを検出できませんでした → fail-open でパスします。"
+              {
+                echo "- 結果: ⏱️ タイムアウト（fail-open でパス）"
+                echo "- Amazon Q のレビューは検出されませんでした。マージ前に手動でレビュー状況を確認してください。"
+                echo "- Amazon Q が無反応の場合は GitHub App のインストール状態を確認してください（.github/PR_REVIEW_GATE.md 参照）。"
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "❌ Amazon Q のレビューを検出できませんでした（PASS_ON_TIMEOUT=false）。"
+            {
+              echo "- 結果: ❌ タイムアウト（ブロック）"
+              echo "- 厳格モードのため Q のレビューが付くまでマージできません。"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          if [ "$blocking" = "true" ] && [ "$ENFORCE_CHANGES_REQUESTED" = "true" ]; then
+            echo "🔴 Amazon Q が CHANGES_REQUESTED を出しています → ゲートをブロックします。"
+            {
+              echo "- 結果: 🔴 ブロック（Amazon Q が変更を要求）"
+              echo "- Amazon Q の指摘に対応し、解消後に PR を更新してください。"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "✅ Amazon Q のレビューを検出しました。ゲートをパスします。"
+          {
+            echo "- 結果: ✅ パス（Amazon Q がレビュー済み）"
+            echo "- Amazon Q の指摘内容を確認のうえマージしてください（最終判断は Code Owner の approve）。"
+          } >> "$GITHUB_STEP_SUMMARY"
