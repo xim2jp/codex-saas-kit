@@ -1,90 +1,50 @@
 ---
 name: i18n-and-currency
-description: SaaS を日本語だけでなく複数言語・複数通貨に対応させるための知識集。Next.js App Router + next-intl での多言語対応（`app/[locale]/` 構成、middleware でのロケール検出、メッセージファイル管理、Server/Client Component の使い分け、SEO の hreflang 対応）、Stripe での多通貨対応（Stripe Tax、通貨別 Price、Adaptive Pricing、地域別決済手段）を収録する。将来の東南アジア展開も見据え、翻訳の量産フローと決済導線の地域対応まで扱う。外部設計・内部設計・実装フェーズで external-designer / internal-designer / implementation-worker / payment-integration-specialist らが参照する。「多言語対応」「i18n」「多通貨」「海外展開」「ローカライズ」「hreflang」「Stripe Tax」で参照。
+description: SaaS を複数言語・複数通貨に対応させるための知識集。Next.js App Router + next-intl での多言語対応（`app/[locale]/` 構成、middleware でのロケール検出、メッセージファイル管理、Server/Client Component の使い分け、hreflang）、Stripe での多通貨対応（Stripe Tax、通貨別 Price、Adaptive Pricing、地域別決済手段）、AI ドラフトによる翻訳量産フロー、東南アジア展開時の決済導線を収録する。対応言語・通貨の要件確定、URL・画面・データモデル設計、実装、海外展開の検討時に参照する。「多言語対応」「i18n」「多通貨」「海外展開」「ローカライズ」「hreflang」「Stripe Tax」で参照。
 ---
 
 # i18n and Currency Skill
 
 SaaS を**日本語だけでなく複数言語・複数通貨に対応**させるための知識集。Next.js App Router 上の `next-intl` による多言語実装と、Stripe による多通貨・地域別決済対応を一気通貫で扱う。
 
-> **このSkillのゴール**：野口さんが量産する SaaS が、①日本語以外のユーザーにも自然な言語で使え、②その国・地域の通貨と決済手段で支払え、③将来の東南アジア展開時に大きな作り直しなく拡張できる状態を、**1名運用で回せる手順**として作る。
+> **ゴール**：野口さんが量産する SaaS が、①日本語以外のユーザーにも自然な言語で使え、②その国・地域の通貨と決済手段で支払え、③将来の東南アジア展開時に大きな作り直しなく拡張できる状態を、**1名運用で回せる手順**として作る。
 
-## いつこのSkillを参照するか
+## 参照ファイル
 
-- **要件定義**：対応言語・対応通貨・展開国の範囲を確定する時
-- **技術スタック選定**：i18n ライブラリ・Stripe の多通貨方式を ADR に記録する時
-- **外部設計**：`app/[locale]/` のURL設計、言語切替UI、価格表示（通貨別）画面の設計時（→ `references/nextjs-i18n.md`）
-- **内部設計**：メッセージファイルの構造、ロケール検出 middleware、Price オブジェクトのデータモデル設計時
-- **実装**：`next-intl` の組み込み、Stripe Checkout / Payment Element の多通貨対応時（→ 各 references）
-- **海外展開の検討**：東南アジア等への展開可否・追加コストを見積もる時
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/nextjs-i18n.md` | next-intl による Next.js App Router 多言語実装パターン、翻訳量産フロー | 多言語対応の設計・実装時（最初に読む） |
+| `references/multi-currency-stripe.md` | Stripe による多通貨・地域別決済対応（Stripe Tax・多通貨 Price・Adaptive Pricing） | 多通貨・海外向け決済の設計・実装時、海外展開の追加コスト見積り時 |
 
-## 重要原則（必読）
+## 原則
 
 ### 1. 「あとから多言語化」は避け、最初から `[locale]` 構造にする
 
-日本語単一で作った後に多言語化すると、ルーティング・metadata・DB設計を作り直すことになりやすい。**単一言語で始める案件でも `app/[locale]/` 構造だけは最初から敷いておく**と、後の追加言語がほぼ翻訳作業だけで済む。詳細は `references/nextjs-i18n.md`。
+日本語単一で作った後に多言語化すると、ルーティング・metadata・DB設計を作り直すことになりやすい。**単一言語で始める案件でも `app/[locale]/` 構造だけは最初から敷いておく**と、後の追加言語がほぼ翻訳作業だけで済む。対応言語・通貨・展開国の範囲は要件定義で確定し、i18n ライブラリと Stripe の多通貨方式は ADR に記録する。詳細は `references/nextjs-i18n.md`。
 
 ### 2. Stripe の多通貨対応は「追加コストなし」で使える優先候補
 
-民事再生中・一括払いのみ・1名運用という野口Profileの財務制約下では、ランニングコストが積み上がる専用ツールは避けたい。**Stripe の多通貨 Price / Adaptive Pricing / Stripe Tax は Stripe 利用料（決済手数料）の範囲内で使え、追加の月額SaaS契約が不要**。多言語対応より先に着手できる場合も多い。詳細は `references/multi-currency-stripe.md`。
+民事再生中・一括払いのみ・1名運用という野口Profileの財務制約下では、ランニングコストが積み上がる専用ツールは避けたい。**Stripe の多通貨 Price / Adaptive Pricing / Stripe Tax は Stripe 利用料（決済手数料）の範囲内で使え、追加の月額SaaS契約が不要**。多言語対応より先に着手できる場合も多い。詳細は `references/multi-currency-stripe.md`。税務・サブスク設計は `stripe-integration` Skill と整合させる。
 
 ### 3. 翻訳は「AIドラフト＋人手レビュー」の軽量フローで量産する
 
-1名運用で翻訳会社に依頼する余裕はない。**Claude API で翻訳ドラフトを生成し、野口さんが要点だけレビューする**フローを標準とする。全文を人手で翻訳しない。詳細は `references/nextjs-i18n.md` の翻訳量産セクション。
+1名運用で翻訳会社に依頼する余裕はない。**Claude API（Claude Sonnet 5.5 など）で翻訳ドラフトを生成するスクリプトを用意し、野口さんが要点だけレビューする**フローを標準とする。全文を人手で翻訳しない。詳細は `references/nextjs-i18n.md` の翻訳量産セクション。
 
 ### 4. SEO の hreflang とテクニカルSEOは `seo-toolkit` Skill と整合させる
 
-多言語ページの `generateMetadata` での hreflang 設定は、`seo-toolkit` Skill が扱うテクニカルSEO（`technical-seo.md`）と密接に関係する。i18n 実装時は `seo-toolkit` の該当箇所と矛盾しないか確認する。
+多言語ページの `generateMetadata` での hreflang 設定は、`seo-toolkit` Skill が扱うテクニカルSEO（`technical-seo.md`）と密接に関係する。i18n 実装時は hreflang・多言語 sitemap・多言語 metadata が `seo-toolkit` の方針と矛盾しないか確認する。
 
 ### 5. 東南アジア展開は「言語・通貨・決済手段」の3点セットで検討する
 
 東南アジア展開時に不足しがちなのは英語対応だけではない。**現地通貨（THB/PHP/VND/IDR/MYR/SGD 等）と、コンビニ決済・PayNow・GrabPay 等の現地決済手段の両方**が揃って初めて実用になる。電話・AI通話でのフィリピン展開を検討する場合は `ai-calling-philippines` Skill も併せて参照し、言語・法令面の知見と連携する（本Skillは決済・表示言語、`ai-calling-philippines` は音声対応が主眼で守備範囲が異なる）。
 
-## このSkillの構成
+### 6. 設計で決めておくこと
 
-```
-i18n-and-currency/
-├── SKILL.md                          # 本ファイル
-└── references/
-    ├── nextjs-i18n.md                # next-intl による Next.js App Router 多言語実装パターン
-    └── multi-currency-stripe.md      # Stripe による多通貨・地域別決済対応
-```
-
-## エージェント別の使い方ガイド
-
-### external-designer
-
-- `app/[locale]/` を前提としたURL設計・画面遷移図
-- 言語切替UI（ヘッダー/フッター）と通貨表示（価格ページ）の設計
-- hreflang 設計（`seo-toolkit` と整合）
-
-### internal-designer
-
-- メッセージファイル（`messages/*.json`）のディレクトリ構造・キー命名規則
-- ロケール検出 middleware の設計（Cookie/Accept-Language の優先順位）
-- Stripe の通貨別 Price ID の自社DBモデル設計
-
-### implementation-worker
-
-- `next-intl` の組み込み、`useTranslations` / `getTranslations` の使い分け実装
-- Stripe Price / Payment Element の多通貨対応実装
-- 翻訳ドラフトの Claude API 生成スクリプト
-
-### payment-integration-specialist
-
-- Stripe Tax・多通貨 Price・Adaptive Pricing の設計判断（`references/multi-currency-stripe.md` を主導的に参照）
-- `stripe-integration` Skill の税務・サブスク設計と整合させる
-
-### seo-specialist
-
-- hreflang・多言語 sitemap・多言語 metadata が `seo-toolkit` の方針と一致しているかレビュー
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `nextjs-i18n.md` | 多言語対応の設計・実装時（最初に読む） |
-| `multi-currency-stripe.md` | 多通貨・海外向け決済の設計・実装時 |
+| 領域 | 決めること |
+|------|-----------|
+| 外部設計 | `app/[locale]/` 前提の URL 設計・画面遷移、言語切替 UI（ヘッダー/フッター）、価格ページの通貨表示、hreflang |
+| 内部設計 | メッセージファイル（`messages/*.json`）のディレクトリ構造・キー命名規則、ロケール検出 middleware（Cookie / Accept-Language の優先順位）、Stripe の通貨別 Price ID を持つ自社 DB モデル |
+| 実装 | `next-intl` の組み込みと `useTranslations`（クライアント）/ `getTranslations`（サーバー）の使い分け、Stripe Price / Payment Element の多通貨対応 |
 
 ## 野口さん固有のチェック
 

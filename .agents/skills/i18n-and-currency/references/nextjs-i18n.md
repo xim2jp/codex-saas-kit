@@ -313,7 +313,7 @@ const anthropic = new Anthropic();
 
 async function translate(targetLocale: string, targetLanguageName: string) {
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
+    model: 'claude-sonnet-5-5',
     max_tokens: 8192,
     messages: [
       {

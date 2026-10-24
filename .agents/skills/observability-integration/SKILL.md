@@ -1,6 +1,6 @@
 ---
 name: observability-integration
-description: SaaS の障害・エラー・予兆を目視で即座に把握できる仕組みを組み込むための知識集。New Relic / Datadog / Sentry の選定（役割分担）、Next.js/Supabase/ECS Fargate の計装パターン、アラート/ダッシュボード設計、PII 対策、公式リモート MCP サーバー経由の本番障害調査・根本原因分析を収録する。監視統合の設計・実装フェーズと本番障害対応時に observability-integration-specialist / implementation-worker らが参照する。「オブザバビリティ」「監視」「モニタリング」「Sentry」「Datadog」「New Relic」「APM」「アラート」「ダッシュボード」「障害調査」「エラー監視」で参照。
+description: SaaS の障害・エラー・予兆を目視で即座に把握できる仕組みを組み込むための知識集。New Relic / Datadog / Sentry の役割分担と選定、Next.js / Supabase / ECS Fargate の計装パターン、SLO・アラート・ダッシュボード設計、PII 対策とキー管理、公式リモート MCP サーバー経由の本番障害調査・根本原因分析を収録する。監視ツールの選定・設計・実装・テレメトリ検証・レビューと本番障害対応時に参照する。「オブザバビリティ」「監視」「モニタリング」「Sentry」「Datadog」「New Relic」「APM」「アラート」「ダッシュボード」「障害調査」「エラー監視」で参照。
 ---
 
 # Observability Integration Skill
@@ -9,20 +9,9 @@ description: SaaS の障害・エラー・予兆を目視で即座に把握で�
 
 > **このSkillのゴール**：本番で何かが起きたとき、「どこで・何が・誰に・どれくらい影響しているか」を**ダッシュボードとアラートで一目で**確認でき、さらに **MCP サーバー経由で Codex から本番エラーを直接調査・根本原因分析**できる状態を作る。
 
-## いつこのSkillを参照するか
+オブザバビリティは**横断的関心事**であり、技術選定から運用・障害対応まで SDLC 全体に薄く広く関わる。
 
-オブザバビリティは**横断的関心事**であり、特定フェーズだけでなく SDLC 全体に薄く広く関わる。以下で必ず読む：
-
-- **技術スタック選定（Phase 3 相当）**：監視ツールの選定とADR記録時（→ `tool-selection.md`）
-- **外部設計（Phase 5 相当）**：SLO / アラート方針 / 監視対象（何を「異常」とするか）の定義時（→ `alerting-and-dashboards.md`）
-- **内部設計（Phase 7 相当）**：計装ポイント（トレース・カスタムイベント・ログ構造）の設計時（→ `instrumentation-patterns.md`）
-- **実装（Phase 11 相当）**：各SDKの組み込み時（→ `sentry.md` / `datadog.md` / `newrelic.md`）
-- **テスト（Phase 12 相当）**：テレメトリが実際に届くかの検証時（→ `instrumentation-patterns.md` の検証節）
-- **本番デプロイ前・運用開始**：ダッシュボード・アラート・MCP接続・ランブック整備（→ `alerting-and-dashboards.md` / `mcp-servers.md`）
-- **障害対応時（運用フェーズ）**：MCP 経由で本番エラーを調査し根本原因分析（→ `mcp-servers.md`）
-- **レビュー時**：PII漏洩・キー管理・過剰計装のチェック（→ `security-and-pii.md`）
-
-## 重要原則（必読）
+## 重要原則
 
 ### 1. 3ツールは「競合」ではなく「役割分担」
 
@@ -69,82 +58,28 @@ description: SaaS の障害・エラー・予兆を目視で即座に把握で�
 
 MCP の認証キーとアプリ計装のキーは**別物**である点に注意（特に New Relic：MCP=User key、計装=License key）。
 
-## このSkillの構成
+## 参照ファイル
 
-```
-observability-integration/
-├── SKILL.md                          # 本ファイル
-└── references/
-    ├── tool-selection.md             # 3ツールの選定ロジック（野口Profile × Tier）
-    ├── sentry.md                     # Sentry 詳細（Next.js SDK・Seer・Supabase連携・料金）
-    ├── newrelic.md                   # New Relic 詳細（APM・無料枠・ECS・OTel）
-    ├── datadog.md                    # Datadog 詳細（Agent・RUM・APM・Watchdog・コスト注意）
-    ├── mcp-servers.md                # 3ツールの公式MCPサーバー登録方法（Codex）
-    ├── instrumentation-patterns.md   # Next.js/Supabase/ECS/Vercel への計装と検証
-    ├── alerting-and-dashboards.md    # 「目視で即確認」のSLO・ダッシュボード・アラート設計
-    └── security-and-pii.md           # PII対策・キー管理・データ最小化チェックリスト
-```
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/tool-selection.md` | 3ツールの選定ロジック（野口Profile × Tier） | 監視ツール選定・ADR 記録時（最初に読む） |
+| `references/sentry.md` | Next.js SDK・Seer・Supabase 連携・料金 | Sentry 実装時・Seer 活用時 |
+| `references/newrelic.md` | APM・無料枠・ECS・OTel | New Relic 実装時・無料枠運用時 |
+| `references/datadog.md` | Agent・RUM・APM・Watchdog・コスト注意 | Datadog 実装時・コスト試算時 |
+| `references/mcp-servers.md` | 3ツールの公式 MCP サーバー登録方法（Codex） | MCP 接続時・本番障害調査時 |
+| `references/instrumentation-patterns.md` | Next.js / Supabase / ECS / Vercel への計装と検証 | 計装設計・実装時、テレメトリ到達の検証時 |
+| `references/alerting-and-dashboards.md` | 「目視で即確認」の SLO・ダッシュボード・アラート設計 | SLO / アラート方針の定義時、運用開始前 |
+| `references/security-and-pii.md` | PII 対策・キー管理・データ最小化チェックリスト | レビュー時・デプロイ前 |
 
-## エージェント別の使い方ガイド
+## フェーズ別の設計観点
 
-### tech-stack-architect
-
-`docs/11-tech-stack/adr/NNNN-observability.md` として監視構成を記録：
-- Tier A：Sentry（エラー）+ New Relic 無料枠（APM/Logs）を標準提案
-- Tier B：Datadog or New Relic（クライアント費用）+ Sentry（エラー深掘り）
-- 各ツールの MCP サーバーを Codex に接続するか（運用支援の有無）
-- 判断根拠は `tool-selection.md` を引用
-
-### external-designer
-
-以下を設計（`docs/20-external-design/observability-design.md`）：
-- **SLO / SLI 定義**：可用性・レイテンシ・エラー率の目標値
-- **アラート方針**：何を Critical / Warning とし、どこ（Slack/メール）へ通知するか
-- **ダッシュボード要件**：運用担当者が定常監視で見る画面の構成
-- **監視対象一覧**：フロント（RUM/Browser）・API・DB（Supabase）・外部連携（Stripe/LINE）
-
-### internal-designer
-
-以下を設計（`docs/30-internal-design/` に追記）：
-- 計装ポイント（どの処理にカスタムトレース/スパン/イベントを入れるか）
-- 構造化ログのスキーマ（トレースIDとの相関）
-- エラーバウンダリと captureException の配置
-- 環境変数・初期化順序（計装は他importより先にロード）
-
-### implementation-worker
-
-- 各ツールの**公式ウィザード/SDK**を最新版で導入（`sentry.md` 等参照）
-- 環境変数で公開/秘密キーを厳格分離、`.env.example` に網羅
-- ソースマップアップロードを CI に組み込む（可読スタックトレース化）
-- PII マスキングを実装時点で組み込む（後付けにしない）
-
-### test-planner / tester / e2e-usecase-tester
-
-- 意図的にエラーを発生させ、監視ツールに届くことを検証（Sentry の `/sentry-example-page` 等）
-- アラートが発火するかをステージングで確認
-- E2E でフロントエラーが RUM/Browser に記録されるか確認
-
-### implementation-reviewer
-
-- `security-and-pii.md` のチェックリストで PII 混入・キー漏洩・過剰計装をレビュー
-- サンプリングレートが本番で適切か（コスト vs 可視性）
-
-### observability-integration-specialist（専用エージェント）
-
-監視統合の設計・実装・運用支援を横断的に担保。MCP 経由の本番障害調査も担当。詳細は `agents/observability-integration-specialist.md` 参照。
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `tool-selection.md` | 監視ツール選定時（最初に読む） |
-| `sentry.md` | Sentry 実装時・Seer 活用時 |
-| `newrelic.md` | New Relic 実装時・無料枠運用時 |
-| `datadog.md` | Datadog 実装時・コスト試算時 |
-| `mcp-servers.md` | Codex へ MCP 接続時・障害調査時 |
-| `instrumentation-patterns.md` | 計装設計・実装・テレメトリ検証時 |
-| `alerting-and-dashboards.md` | SLO/アラート/ダッシュボード設計時 |
-| `security-and-pii.md` | レビュー時・デプロイ前 |
+- **技術選定**（`docs/11-tech-stack/adr/NNNN-observability.md`）：Tier A は Sentry（エラー）+ New Relic 無料枠（APM/Logs）を標準提案。Tier B は Datadog または New Relic（クライアント費用）+ Sentry（エラー深掘り）。各ツールの MCP サーバーを Codex に接続するか（運用支援の有無）も決める。根拠は `tool-selection.md` を引用する
+- **外部設計**（`docs/20-external-design/observability-design.md`）：SLO / SLI（可用性・レイテンシ・エラー率の目標値）、アラート方針（何を Critical / Warning とし、Slack / メールのどこへ通知するか）、定常監視ダッシュボードの構成、監視対象一覧（フロント RUM/Browser・API・DB（Supabase）・外部連携（Stripe/LINE））
+- **内部設計**（`docs/30-internal-design/` に追記）：計装ポイント（カスタムトレース／スパン／イベントを入れる処理）、トレース ID と相関する構造化ログのスキーマ、エラーバウンダリと captureException の配置、環境変数と初期化順序（計装は他 import より先にロード）
+- **実装**：各ツールの公式ウィザード / SDK を最新版で導入する。公開／秘密キーを環境変数で分離し `.env.example` に網羅する。ソースマップアップロードを CI に組み込む。PII マスキングを実装時点で入れる（後付けにしない）
+- **テスト**：意図的にエラーを発生させて監視ツールに届くことを確認する（Sentry の `/sentry-example-page` 等）。ステージングでアラートが発火するか、E2E でフロントエラーが RUM/Browser に記録されるかを確かめる
+- **レビュー**：`security-and-pii.md` で PII 混入・キー漏洩・過剰計装を確認し、本番のサンプリングレートがコストと可視性の釣り合いに合っているかを見る
+- **障害対応**：MCP 経由で本番エラーを調査し根本原因分析まで行う（`mcp-servers.md`）
 
 ## 野口さん固有のチェック
 

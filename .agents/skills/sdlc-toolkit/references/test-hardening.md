@@ -6,7 +6,7 @@
 
 ## 6原則
 
-### 原則1：テストケース抽出の二重化（Phase 9）
+### 原則1：テストケース抽出の二重化（Phase 13）
 
 - **test-planner** は test-cases.md 作成時に**導出技法マトリクス**（`docs/40-test-plan/case-derivation-matrix.md`）を必ず作成する。同値分割／境界値／状態遷移／デシジョンテーブル／エラー推測／CRUD×ロール表の各技法について「どの技法がどのケースを生んだか」を明示し、**適用しなかった技法には理由を書く**（空欄禁止）
 - **test-case-adversary** を test-planner と**並列起動**する。adversary は test-planner の成果物を**一切 Read せず**、要件定義・機能一覧・外部設計のみから独立にテストケースを抽出し `docs/40-test-plan/adversarial-cases.md` に書く
@@ -14,9 +14,9 @@
   - 両方にあるケース → 確度高（そのまま採用）
   - **片方にしかないケース → 原則全件採用**（除外する場合は理由必須）
   - 突合結果を test-cases.md / e2e-scenarios.md に反映
-- test-plan-reviewer（Phase 10）は導出技法マトリクスと突合表の存在・空欄の無さを確認。**無ければ即 Block**
+- test-plan-reviewer（Phase 14）は導出技法マトリクスと突合表の存在・空欄の無さを確認。**無ければ即 Block**
 
-### 原則2：ブラックボックス・ファースト（Phase 11）
+### 原則2：ブラックボックス・ファースト（Phase 15）
 
 - tester は**まず仕様書（test-cases.md / api-spec.md / 要件）のみからテストを書く**。この段階で実装コード（クラス実装・関数本体）を Read することを**禁止**する（型定義・エクスポートシグネチャの確認は可）
 - ブラックボックステストが揃った後にカバレッジを計測し、穴埋めとしてホワイトボックステスト（分岐網羅）を追加する
@@ -32,11 +32,11 @@
   - 結果は `docs/41-test-results/mutation-YYYYMMDD-HHMM.md` に記録（対象モジュール・スコア・生き残ったミュータントと対応方針）
   - 生存ミュータント＝「その変異をしてもテストが通る」＝アサーション不足。**生存ミュータントの上位から順にテストを補強**する
 - **プロパティベーステスト（fast-check）**：金額計算・日付・状態遷移などのドメインロジックには、手で列挙したケースに加えて fast-check による自動生成ケースを書く（不変条件：「合計は常に0以上」「適用順序を変えても結果同一」等）
-- 実行タイミング：Phase 11 のテスト実装完了時に必ず1回。以降は重い場合クリティカルモジュールのみで可
+- 実行タイミング：Phase 15 のテスト実装完了時に必ず1回。以降は重い場合クリティカルモジュールのみで可
 
-### 原則4：探索的・敵対的テスト（Phase 12.5）
+### 原則4：探索的・敵対的テスト（Phase 16.5）
 
-台本化された E2E は「予測できたこと」しか証明しない。Phase 12（ユースケースE2E）完了後、**exploratory-tester** が Playwright で**台本外の攻撃**を実施する（Phase 13 と並列可、Phase 14 の前提）。
+台本化された E2E は「予測できたこと」しか証明しない。Phase 16（ユースケースE2E）完了後、**exploratory-tester** が Playwright で**台本外の攻撃**を実施する（Phase 17 と並列可、Phase 18 の前提）。
 
 攻撃カタログ（最低限これを全て試みる）：
 1. **操作順序の攪乱**：想定フローのステップ入れ替え・スキップ・途中離脱→再開
@@ -47,7 +47,7 @@
 6. **権限の横断**：URL直打ちでの他ユーザーリソースアクセス（IDOR）、退会後・プラン降格後の残存アクセス
 7. **中断と再開**：アップロード/決済/生成処理の途中でのタブ閉じ・オフライン化
 
-成果物：`docs/41-test-results/exploratory-YYYYMMDD-HHMM.md`（**必須**。試行した攻撃×結果の全記録＋発見バグ一覧）。発見バグは Phase 11 差し戻し（implementation-worker）＋**再現テストを tests/ に恒久追加**。
+成果物：`docs/41-test-results/exploratory-YYYYMMDD-HHMM.md`（**必須**。試行した攻撃×結果の全記録＋発見バグ一覧）。発見バグは Phase 15 差し戻し（implementation-worker）＋**再現テストを tests/ に恒久追加**。
 
 ### 原則5：バグ・エスケープ分析（最重要のPDCA）
 
@@ -59,7 +59,7 @@
 ```markdown
 | ID | 発見日 | 発見フェーズ | 混入フェーズ | 本来捕捉すべきだった網 | 欠けていた項目 | 再現テスト | チェックリスト反映 |
 |----|--------|------------|------------|---------------------|--------------|-----------|------------------|
-| BUG-012 | 2026-07-01 | 本番 | Phase 11 | Phase 9 デシジョンテーブル | プラン変更×日割りの組合せ | tests/unit/billing-proration.spec.ts | test-cases.md §4 に追記済 |
+| BUG-012 | 2026-07-01 | 本番 | Phase 15 | Phase 13 デシジョンテーブル | プラン変更×日割りの組合せ | tests/unit/billing-proration.spec.ts | test-cases.md §4 に追記済 |
 ```
 
 3. 「欠けていた項目」を **test-cases.md / e2e-scenarios.md / 該当エージェントのチェックリストに即日追記**（案件内PDCA）
@@ -72,21 +72,21 @@
 - flaky の握り潰し禁止：`test.fixme()` / リトライ設定で隠すのではなく、レポートに flaky 一覧と原因分類を記録
 - シードデータは**複数ペルソナ×複数状態**（新規／トライアル中／課金中／解約予約中／退会済）を用意し、E2E は少なくとも2状態で実行
 
-## フェーズへの組み込み（v0.12.0）
+## フェーズへの組み込み
 
 | Phase | 追加・変更 | 担当 | 成果物 |
 |-------|----------|------|--------|
-| 9 | test-case-adversary を**並列起動**、突合表作成 | test-planner + test-case-adversary | case-derivation-matrix.md / adversarial-cases.md / case-reconciliation.md |
-| 10 | マトリクス・突合表の検証を追加 | test-plan-reviewer | （レビュー内で確認、無ければ Block） |
-| 11 | ブラックボックス・ファースト、ミューテーション、プロパティ | tester | mutation-*.md |
-| 12 | 3回連続実行ルール、複数シード状態 | e2e-usecase-tester | usecase-e2e-*.md（安定性節を含む） |
-| **12.5** | **探索的・敵対的テスト（新設、Phase 13 と並列可）** | **exploratory-tester** | **exploratory-*.md（必須）** |
-| 14 | mutation / exploratory / ledger をレビュー対象に追加 | implementation-reviewer | （Block 条件に追加） |
+| 13 | test-case-adversary を**並列起動**、突合表作成 | test-planner + test-case-adversary | case-derivation-matrix.md / adversarial-cases.md / case-reconciliation.md |
+| 14 | マトリクス・突合表の検証を追加 | test-plan-reviewer | （レビュー内で確認、無ければ Block） |
+| 15 | ブラックボックス・ファースト、ミューテーション、プロパティ | tester | mutation-*.md |
+| 16 | 3回連続実行ルール、複数シード状態 | e2e-usecase-tester | usecase-e2e-*.md（安定性節を含む） |
+| **16.5** | **探索的・敵対的テスト（新設、Phase 17 と並列可）** | **exploratory-tester** | **exploratory-*.md（必須）** |
+| 18 | mutation / exploratory / ledger をレビュー対象に追加 | implementation-reviewer | （Block 条件に追加） |
 | 全域 | バグ・エスケープ分析（発見の都度） | 発見者＋修正者 | bug-escape-ledger.md（累積） |
 
-### Phase 14 の追加 Block 条件
+### Phase 18 の追加 Block 条件
 
-- `exploratory-*.md` が存在しない（Phase 12.5 未実施）
+- `exploratory-*.md` が存在しない（Phase 16.5 未実施）
 - `mutation-*.md` が存在せず、かつクリティカルモジュール（課金・認証・権限）がある案件
 - 探索的テストの発見バグに再現テスト・台帳記録が無い
 - bug-escape-ledger.md に「チェックリスト反映」が空欄の行が残っている

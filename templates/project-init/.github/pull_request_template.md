@@ -10,7 +10,7 @@
 
 このリポジトリは **レビュワーエージェント × Amazon Q Developer** の二重ゲートでマージを守る。
 
-- [ ] **① レビュワーエージェント**: 開発中に Phase 14 `implementation-reviewer` のレビューを通した（Verdict: 🟢 Approve）
+- [ ] **① レビュワーエージェント**: 開発中に Phase 18 `implementation-reviewer` のレビューを通した（Verdict: 🟢 Approve）
 - [ ] **② Amazon Q Developer**: PR 上の Amazon Q 自動レビューの指摘を確認し、必要な対応を済ませた
 - [ ] CI の `amazon-q-review-gate` がパスしている
 - [ ] Code Owner の approve を取得（または取得予定）
@@ -19,9 +19,9 @@
 
 ## テスト
 
-- [ ] Phase 11 ユニット/統合テスト パス
-- [ ] Phase 12 ユースケース E2E パス
-- [ ] Phase 13 要件トレーサビリティ監査 パス
+- [ ] Phase 15 ユニット/統合テスト パス
+- [ ] Phase 16 ユースケース E2E パス
+- [ ] Phase 17 要件トレーサビリティ監査 パス
 
 ## 影響範囲・補足
 

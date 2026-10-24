@@ -1,6 +1,6 @@
 ---
 name: paid-ads-toolkit
-description: SaaS の集客を SNS 広告（Meta/Instagram・TikTok・X・LINE広告・YouTube）中心の有料広告で加速するための知識集。競合過多でSEOだけでは頭打ちになるカテゴリを想定し、媒体選定、広告クリエイティブ戦略（フック設計・量産・疲労対策）、ターゲティングと予算配分（少額テストからのスケール）、コンバージョン計測（Pixel/Conversions API・GA4連携）、CAC/LTV/ROAS目標設定と撤退基準、景品表示法・ステマ規制等のコンプライアンスを収録する。営業サイト構築・集客戦略確定フェーズと、公開後の広告運用改善フェーズで ad-strategy-specialist / marketing-site-builder / promo-video-producer らが参照する。「SNS広告」「広告戦略」「Meta広告」「TikTok広告」「X広告」「LINE広告」「ペイドマーケティング」「CAC」「ROAS」で参照。
+description: SaaS の集客を SNS 広告（Meta/Instagram・TikTok・X・LINE広告・YouTube）中心の有料広告で加速するための知識集。競合過多で SEO だけでは頭打ちになるカテゴリを想定し、媒体選定、クリエイティブ戦略（フック設計・量産・疲労対策）、ターゲティングと予算配分（少額テストからのスケール、与信に依存しない支払い方式）、コンバージョン計測（Pixel / Conversions API・GA4 連携）、CAC/LTV/ROAS 目標と撤退基準、景品表示法・ステマ規制を収録する。集客戦略の確定時と公開後の広告運用改善で参照する。「SNS広告」「広告戦略」「Meta広告」「TikTok広告」「X広告」「LINE広告」「ペイドマーケティング」「CAC」「ROAS」で参照。
 ---
 
 # Paid Ads Toolkit Skill
@@ -9,16 +9,7 @@ SaaS の集客を **SNS 広告を中心とした有料広告**で加速するた
 
 > **このSkillのゴール**：野口さんが量産する月額 SaaS が、①競合の多いカテゴリでも新規獲得を止めずに済み、②CAC が LTV に見合う範囲でスケール判断ができ、③一括払いのみ・分割借入不可という財務制約の中で広告費が制御不能にならない状態を作る。
 
-## いつこのSkillを参照するか
-
-- **集客戦略の確定フェーズ**：SEO/AIOだけでは立ち上がりが遅い、または競合カテゴリが飽和していると判断したとき（→ `platform-selection.md`）
-- **広告クリエイティブ企画**：フック設計・訴求軸の決定時（→ `creative-strategy.md`。`promo-video-producer` / `visual-director` と連携）
-- **予算設計・与信リスク確認**：広告アカウントの支払い方式決定時（→ `targeting-and-budget.md`。**財務制約に直結する最重要参照**）
-- **計測実装**：Pixel/Conversions API、GA4連携の実装時（→ `conversion-tracking.md`）
-- **投資判断・スケール判断**：CAC/LTV/ROASを見て予算を増減する時（→ `cac-ltv-and-scaling.md`）
-- **広告文言・表現のレビュー**：景品表示法・ステマ規制のチェック時（→ `compliance-and-platform-policy.md`）
-
-## 重要原則（必読）
+## 重要原則
 
 ### 1. SEO/AIOと広告は「役割分担」であって代替ではない
 
@@ -46,52 +37,25 @@ SNS広告は**クリエイティブの消耗が速い**（同じ広告を同じ�
 
 SaaSの「効果」を誇張する表現は**景品表示法（優良誤認・有利誤認）**に抵触しうる。インフルエンサー起用やUGC風広告は**ステルスマーケティング規制（2023年10月施行）**の対象になりうる。各SNSプラットフォームの広告ポリシーも随時変わる。`compliance-and-platform-policy.md` を毎回参照し、`legal-docs-generator` の特商法表記と整合させる。
 
-## このSkillの構成
+## 参照ファイル
 
-```
-paid-ads-toolkit/
-├── SKILL.md                          # 本ファイル
-└── references/
-    ├── platform-selection.md         # SNS広告媒体の選定（Meta/TikTok/X/LINE/YouTube）とB2B/B2C別の向き不向き
-    ├── creative-strategy.md          # クリエイティブ戦略（フック設計・フォーマット別要件・量産・疲労対策）
-    ├── targeting-and-budget.md       # ターゲティング設計・予算配分・支払い方式（財務制約対応、最重要）
-    ├── conversion-tracking.md        # Pixel/Conversions API・GA4連携・iOS プライバシー制約対応
-    ├── cac-ltv-and-scaling.md        # CAC/LTV/ROAS目標設定・撤退基準・段階的スケール判断
-    └── compliance-and-platform-policy.md  # 景品表示法・ステマ規制・各SNS広告ポリシー
-```
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/platform-selection.md` | SNS 広告媒体の選定（Meta/TikTok/X/LINE/YouTube）と B2B/B2C 別の向き不向き | SEO/AIO だけでは立ち上がりが遅い・競合が飽和していると判断したとき |
+| `references/creative-strategy.md` | フック設計・フォーマット別要件・量産・疲労対策 | クリエイティブ企画・訴求軸の決定時 |
+| `references/targeting-and-budget.md` | ターゲティング設計・予算配分・支払い方式（財務制約対応、最重要） | 予算設計、広告アカウントの支払い方式決定時 |
+| `references/conversion-tracking.md` | Pixel / Conversions API・GA4 連携・iOS プライバシー制約対応 | 計測実装時 |
+| `references/cac-ltv-and-scaling.md` | CAC/LTV/ROAS 目標設定・撤退基準・段階的スケール判断 | 予算の増減・スケール判断時 |
+| `references/compliance-and-platform-policy.md` | 景品表示法・ステマ規制・各 SNS 広告ポリシー | 広告文言・表現のレビュー時（毎回） |
 
-## エージェント別の使い方ガイド
+## 他領域との接続
 
-### ad-strategy-specialist（専用エージェント）
-
-広告戦略の設計・媒体選定・予算配分・計測設計・コンプライアンス確認を横断的に担う。詳細は `agents/ad-strategy-specialist.md` 参照。
-
-### seo-specialist との関係
-
-- 中長期のSEO/AIO戦略と、短期の広告戦略の**予算・優先度バランス**を協議する
-- 広告のランディングページはSEO観点の構造（title/OG/構造化データ）も満たすよう `seo-plan.md` と整合させる
-
-### promo-video-producer / visual-director / page-designer との関係
-
-- 広告クリエイティブ（動画・静止画）の**フォーマット要件（尺・アスペクト比・冒頭フック秒数）**を伝え、量産を依頼する
-- ブランドの `visual-style-guide.md` / `design-system.md` を広告クリエイティブでも尊重する
-
-### pricing-strategist / cost-guardian との関係
-
-- CAC の許容上限は LTV（`pricing-strategy.md` のプラン単価×継続期間）から逆算する
-- 広告予算そのものも `cost-estimate.md` のランニングコストに計上し、一括払い前提の年間試算に含める
-
-### marketing-site-builder との関係
-
-- 広告の受け皿となるLP（ランディングページ）の実装を依頼。UTM計測・Pixel設置箇所を明示する
-
-### legal-docs-generator との関係
-
-- 広告文言の景品表示法チェック、特商法表記とのリンク整合を確認
-
-### analytics-integration Skill との関係
-
-- コンバージョン計測・ファネル定義は `analytics-integration` の実装パターンと重複させず、広告特有の計測（Pixel/Conversions API）を本Skillが担当する
+- **SEO/AIO**：中長期の SEO 戦略と短期の広告戦略の予算・優先度を一緒に決める。広告の受け皿 LP も title / OG / 構造化データを満たし `seo-plan.md` と整合させる
+- **クリエイティブ制作**：動画・静止画の制作側にはフォーマット要件（尺・アスペクト比・冒頭フック秒数）を渡して量産を依頼する。`visual-style-guide.md` / `design-system.md` は広告でも尊重する
+- **価格・コスト**：CAC の許容上限は LTV（`pricing-strategy.md` のプラン単価 × 継続期間）から逆算する。広告予算は `cost-estimate.md` のランニングコストに計上し、一括払い前提の年間試算に含める
+- **LP 実装**：受け皿 LP の実装依頼には UTM 計測と Pixel の設置箇所を明示する
+- **法務**：広告文言の景品表示法チェックと、特商法表記へのリンク整合を確認する
+- **計測**：ファネル定義・一般的なイベント計測は `analytics-integration` に任せ、本 Skill は広告特有の計測（Pixel / Conversions API）だけを扱う
 
 ## 野口さん固有のチェック
 

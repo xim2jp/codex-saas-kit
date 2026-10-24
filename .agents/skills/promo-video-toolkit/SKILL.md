@@ -1,6 +1,6 @@
 ---
 name: promo-video-toolkit
-description: SaaS のプロモーション動画（LPヒーロー動画・プロダクトデモ動画・SNS縦型広告・explainer/説明動画）を低コストで量産するための知識集。Remotion（React で動画をコード生成）・画面録画（Playwright/OBS）・AI動画生成（Veo/Sora/Runway/Kling）・AIナレーション/字幕のハイブリッド手法と、絵コンテ・台本、エンコード・Web埋め込み（Core Web Vitals 配慮）・SNS配信・VideoObject・計測を収録する。営業サイト・広告用の動画が必要なフェーズで promo-video-producer / marketing-site-builder らが参照する。「プロモ動画」「プロモーション動画」「動画生成」「デモ動画」「LP動画」「ヒーロー動画」「SNS広告動画」「explainer」「説明動画」「Remotion」「AI動画」「ナレーション」で参照。
+description: SaaS のプロモーション動画（LP ヒーロー動画・プロダクトデモ動画・SNS 縦型広告・explainer）を低コストで量産するための知識集。Remotion（React で動画をコード生成）・画面録画（Playwright/OBS）・AI 動画生成（Veo/Sora/Runway/Kling）・AI ナレーション/字幕のハイブリッド手法と、絵コンテ・台本、エンコード・Web 埋め込み（Core Web Vitals 配慮）・SNS 配信・VideoObject・計測を収録する。営業サイト・広告用の動画の企画・制作・埋め込み時に参照する。「プロモ動画」「動画生成」「デモ動画」「LP動画」「ヒーロー動画」「SNS広告動画」「explainer」「説明動画」「Remotion」「AI動画」「ナレーション」で参照。
 ---
 
 # Promo Video Toolkit Skill
@@ -9,14 +9,7 @@ SaaS のプロモーション動画（**LPヒーロー動画・プロダクト�
 
 > **このSkillのゴール**：野口さんが量産する月額 SaaS ごとに、①LPに埋め込む短い訴求動画、②実画面のデモ動画、③SNS広告用の縦型動画、④課題→解決の explainer を、**1名運用・追加コスト最小**で作れる手順を持つ。
 
-## いつこのSkillを参照するか
-
-- **営業サイト企画/構築（Phase 4 / `docs/15-marketing-site`）**：LPヒーロー動画・デモ動画の企画時（→ `video-strategy.md`）
-- **動画実装**：Remotion でコード生成する時（→ `remotion.md`）／実画面を録画する時（→ `screen-recording.md`）／AIでB-roll・実写風映像を作る時（→ `ai-video-generation.md`）
-- **音声**：ナレーション・BGM・字幕を付ける時（→ `audio-and-voiceover.md`）
-- **納品・配信**：Web埋め込み・SNS各社の仕様・計測（→ `delivery-and-distribution.md`）
-
-## 重要原則（必読）
+## 重要原則
 
 ### 1. ハイブリッド＝「正確さ」「コスト」「映え」の三択を用途で割り当てる
 
@@ -52,61 +45,24 @@ LP埋め込みも SNS も**自動再生・ミュート**が前提。
 
 > **基本方針：Remotion（OSS・無料）＋ 画面録画（OBS/Playwright・無料）＋ 字幕。AIナレーション（ElevenLabs 等）と AI動画生成は、尺・本数を見積もってから使う。** コスト試算は `ai-video-generation.md` / `audio-and-voiceover.md`。
 
-## このSkillの構成
+## 参照ファイル
 
-```
-promo-video-toolkit/
-├── SKILL.md                      # 本ファイル
-└── references/
-    ├── video-strategy.md         # 動画タイプ別の設計（尺/比率/構成テンプレ/CV/ストーリーボード）
-    ├── remotion.md               # Remotion（React で動画コード生成）実装・Next.js統合・データ連動・レンダリング
-    ├── screen-recording.md       # 画面録画ベースのデモ動画（Playwright/OBS・台本・テロップ）
-    ├── ai-video-generation.md    # AI動画生成（Veo/Sora/Runway/Kling/Pika 等）選定・プロンプト・コスト
-    ├── audio-and-voiceover.md    # AIナレーション・BGM/SE・字幕・ラウドネス・ライセンス
-    └── delivery-and-distribution.md # エンコード/最適化・Web埋め込み・SNS仕様・配信・計測
-```
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/video-strategy.md` | 動画タイプ別の設計（尺/比率/構成テンプレ/CV/ストーリーボード） | 企画・絵コンテ（最初に読む） |
+| `references/remotion.md` | Remotion 実装・Next.js 統合・データ連動・レンダリング | コード生成で作るとき |
+| `references/screen-recording.md` | 画面録画ベースのデモ動画（Playwright/OBS・台本・テロップ） | 実画面デモを作るとき |
+| `references/ai-video-generation.md` | AI 動画生成（Veo/Sora/Runway/Kling/Pika 等）の選定・プロンプト・コスト | AI 映像を使うとき・コスト試算時 |
+| `references/audio-and-voiceover.md` | AI ナレーション・BGM/SE・字幕・ラウドネス・ライセンス | ナレーション / BGM / 字幕の付与時 |
+| `references/delivery-and-distribution.md` | エンコード/最適化・Web 埋め込み・SNS 仕様・配信・計測 | 書き出し・埋め込み・配信・計測時 |
 
-## エージェント別の使い方ガイド
+## 制作・組み込みの要点
 
-### marketing-site-builder
-
-- LPヒーロー動画・デモ動画の**埋め込み**を担当（`<video>` の自動再生/ミュート/ループ、`poster`、遅延読み込み）
-- 動画そのものの企画・生成は `promo-video-producer` に委譲
-- 重い動画でLCPを悪化させない（`delivery-and-distribution.md`）
-
-### visual-director
-
-- 動画のビジュアル方針（色・モーション量・トーン）は visual-style-guide に従う
-- **静止画＝visual-director / 動画＝promo-video-producer** と役割分担（重複しない）
-
-### implementation-worker
-
-- Remotion プロジェクトを `remotion/`（or `src/remotion/`）に構築し、CIでレンダリング
-- アプリ内オンボーディング動画・ヘルプ動画の組み込み
-
-### test-planner / tester
-
-- 埋め込み動画が再生され、LCP/CLS を悪化させないか確認
-- 字幕（テロップ/キャプション）が表示されるか
-
-### seo-specialist との関係
-
-- 動画ページに `VideoObject` 構造化データ、サムネ、トランスクリプトを付与（検索/AI検索の動画露出）
-
-### promo-video-producer（専用エージェント）
-
-動画の企画〜生成〜納品を横断的に担当。詳細は `agents/promo-video-producer.md` 参照。
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `video-strategy.md` | 企画・絵コンテ（最初に読む） |
-| `remotion.md` | コード生成で作る時 |
-| `screen-recording.md` | 実画面デモを作る時 |
-| `ai-video-generation.md` | AI映像を使う時・コスト試算 |
-| `audio-and-voiceover.md` | ナレーション/BGM/字幕付与時 |
-| `delivery-and-distribution.md` | 書き出し・埋め込み・配信・計測時 |
+- **LP への埋め込み**：`<video>` は自動再生・ミュート・ループ、`poster`、遅延読み込みで組み、重い動画で LCP を悪化させない（`delivery-and-distribution.md`）
+- **静止画と動画の分担**：静止画は `visual-design-toolkit`、動画は本 Skill。動画のビジュアル方針（色・モーション量・トーン）も visual-style-guide に従う
+- **Remotion の置き場**：`remotion/`（または `src/remotion/`）に構築し、CI でレンダリングする。アプリ内オンボーディング動画・ヘルプ動画にも流用できる
+- **検証**：埋め込み動画が再生され LCP/CLS を悪化させないか、字幕（テロップ／キャプション）が表示されるかを確かめる
+- **SEO**：動画ページには `VideoObject` 構造化データ、サムネイル、トランスクリプトを付けて検索／AI 検索での露出を得る
 
 ## 野口さん固有のチェック
 

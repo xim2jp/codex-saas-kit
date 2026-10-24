@@ -1,26 +1,23 @@
 ---
 name: analytics-integration
-description: SaaS の利用実態・ファネル・KPIを数値で把握し、意思決定に使える状態にするための知識集。PostHog（プロダクト分析）/ GA4（マーケ標準）/ Vercel Analytics（Core Web Vitals）の役割分担と選定基準、登録〜活性化〜課金〜解約のファネル定義とイベント設計、MRR/Churn/Activation Rate/LTV/CAC等のKPI定義、Next.js App Router でのPostHog Provider・gtag.js・@vercel/analytics実装パターン、PIIマスキング方針を収録する。企画・外部設計・実装の各フェーズと公開後のKPI運用時に marketing-site-builder / implementation-worker / cost-guardian らが参照する。「アナリティクス」「PostHog」「GA4」「ファネル分析」「KPIダッシュボード」で参照。
+description: SaaS の利用実態・ファネル・KPI を数値で把握し意思決定に使うための知識集。PostHog（プロダクト分析）/ GA4（マーケ標準）/ Vercel Analytics（Core Web Vitals）の役割分担と選定基準、登録〜活性化〜課金〜解約のファネル定義とイベント設計、MRR/Churn/Activation Rate/LTV/CAC 等の KPI 定義、Next.js App Router での PostHog Provider・gtag.js・@vercel/analytics 実装パターン、PII マスキング方針を収録する。計測ツール選定、画面設計からのイベント導出、計測実装・レビュー、公開後の KPI 運用時に参照する。「アナリティクス」「PostHog」「GA4」「ファネル分析」「KPIダッシュボード」で参照。
 ---
 
 # Analytics Integration Skill
 
-成果物（SaaS）の**利用実態・ファネル・KPIを数値で把握し、経営判断に使える状態**にするための知識集。PostHog / GA4 / Vercel Analytics の3ツールを軸に、ファネル・KPI設計と実装の双方を支援する。
+成果物（SaaS）の**利用実態・ファネル・KPIを数値で把握し、経営判断に使える状態**にするための知識集。PostHog / GA4 / Vercel Analytics の3ツールを軸に、ファネル・KPI設計と実装の双方を支援する。アナリティクスは**横断的関心事**であり、技術選定から運用まで薄く広く関わる。
 
-> **このSkillのゴール**：野口さんが量産する月額 SaaS の1つ1つで、「誰が・どこで離脱し・何が課金に繋がっているか」を**無料枠中心のツールで即座に可視化**でき、KPIダッシュボードで経営判断（機能改善/解約対策/広告投資）を数字で下せる状態を作る。
+> **ゴール**：野口さんが量産する月額 SaaS の1つ1つで、「誰が・どこで離脱し・何が課金に繋がっているか」を**無料枠中心のツールで即座に可視化**でき、KPIダッシュボードで経営判断（機能改善/解約対策/広告投資）を数字で下せる状態を作る。
 
-## いつこのSkillを参照するか
+## 参照ファイル
 
-アナリティクスは**横断的関心事**であり、企画から運用まで薄く広く関わる。以下で必ず読む：
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/tool-selection.md` | PostHog/GA4/Vercel Analytics の選定ロジック（野口Profile × Tier）、無料枠情報 | 計測ツール選定・ADR 記録時（最初に読む）、無料枠逸脱リスクの確認時 |
+| `references/funnel-and-kpi.md` | ファネル定義・イベント設計の導出・KPI 定義と計算式 | 外部設計からのイベント導出時、LP のコンバージョン計測設計時、公開後の KPI 定点観測時 |
+| `references/implementation-patterns.md` | Next.js App Router 実装パターン・PII マスキング・レビューチェックリスト | SDK 組み込み・イベント送信実装時、PII 混入・二重計測・命名不整合のレビュー時 |
 
-- **技術スタック選定（Phase 3 相当）**：PostHog/GA4/Vercel Analyticsの選定とADR記録時（→ `tool-selection.md`）
-- **外部設計（Phase 5 相当）**：`screen-list.md` / `feature-list.md` からイベント設計・ファネル定義を導出する時（→ `funnel-and-kpi.md`）
-- **実装（Phase 11 相当）**：Provider/SDK の組み込み・イベント送信の実装時（→ `implementation-patterns.md`）
-- **営業サイト構築**：LP のコンバージョン計測・GA4連携時（`marketing-site-playbook` と併読）
-- **公開後の運用**：KPIダッシュボードでMRR/Churn/Activationを定点観測し改善する時（→ `funnel-and-kpi.md`）
-- **レビュー時**：PII混入・二重計測・イベント命名の不整合をチェック（→ `implementation-patterns.md` のチェックリスト）
-
-## 重要原則（必読）
+## 原則
 
 ### 1. 3ツールは「競合」ではなく「役割分担」
 
@@ -32,74 +29,29 @@ description: SaaS の利用実態・ファネル・KPIを数値で把握し、�
 | **GA4** | マーケティング標準・広告連携・オーガニック流入分析 | 「どこから来て何に転換したか」を集客観点で追う |
 | **Vercel Analytics** | Core Web Vitals・簡易ページ訪問数 | 「サイトが速いか・見られているか」を運用コスト最小で把握 |
 
-詳細な選定ロジックは `tool-selection.md`。
+計測構成は `docs/11-tech-stack/adr/NNNN-analytics.md` に ADR として記録し、判断根拠は `tool-selection.md` を引用する。
 
 ### 2. 野口さん財務制約：無料枠で完結させる
 
 民事再生中のため一括払いのみ、分割・借入不可。1名運用でSaaSを複数並行運用するため、**ランニングコストが積み上がるツールは慎重に選定**する。
 
-> **基本方針：Tier A 案件は「PostHog 無料枠（月100万イベント）+ GA4（無料）+ Vercel Analytics（Hobbyの一部無料）」で開始。有料プランへの引き上げは、イベント量やクライアント費用負担が確定してから検討する。**
+> **基本方針：Tier A 案件は「PostHog 無料枠（月100万イベント）+ GA4（無料）+ Vercel Analytics（Hobbyの一部無料）」で開始。有料プランへの引き上げは、イベント量やクライアント費用負担が確定してから検討する。** 複数SaaS横断でのイベント量・プロパティ数の無料枠逸脱は、コスト監視の判断材料として `tool-selection.md` の無料枠情報で見る。
 
 ### 3. ファネルは外部設計から機械的に導出する
 
-思いつきでイベントを打たない。`docs/20-external-design/screen-list.md` と `feature-list.md` から**登録→活性化→課金→解約**の各段階に対応する画面・操作を洗い出し、イベント名を設計する。詳細は `funnel-and-kpi.md`。
+思いつきでイベントを打たない。`docs/20-external-design/screen-list.md` と `feature-list.md` から**登録→活性化→課金→解約**の各段階に対応する画面・操作を洗い出し、イベント名を設計する。画面設計の段階でファネル各段階に対応する画面・操作を意識しておくと、イベント設計の元ネタになる。実装ではイベント送信箇所を内部設計のユースケースに対応づける。詳細は `funnel-and-kpi.md`。
 
-### 4. PII対策は observability-integration と方針を統一する
+### 4. 営業サイトは登録前ファネルとして計測する
 
-計測ツールにも Supabase 由来の個人情報（メール・氏名等）が混入しやすい。`observability-integration/references/security-and-pii.md` が定める**「取り込み前マスキング」（保存後は消せない前提で送信前に除去する）**の考え方をアナリティクス側でも踏襲する。イベントプロパティに `email` / `name` 等の生PIIを載せず、匿名化・仮名化したIDのみを使う。詳細は `implementation-patterns.md`。
+LP・価格ページ・CTA に GA4 コンバージョンイベントと Vercel Analytics を組み込む。`marketing-site-playbook` の導線設計と `funnel-and-kpi.md` の登録前ファネルを併読する。
 
-### 5. 量産テンプレ化を前提に、Provider は初期セットアップの型を固定する
+### 5. PII対策は observability-integration と方針を統一する
 
-1名運用で複数SaaSを並行するため、PostHog Provider・gtag.js・`@vercel/analytics` の組み込みは**案件ごとに設計し直さず、標準パターンを再利用**する。詳細は `implementation-patterns.md`。
+計測ツールにも Supabase 由来の個人情報（メール・氏名等）が混入しやすい。`observability-integration/references/security-and-pii.md` が定める**「取り込み前マスキング」（保存後は消せない前提で送信前に除去する）**の考え方をアナリティクス側でも踏襲する。イベントプロパティに `email` / `name` 等の生PIIを載せず、匿名化・仮名化したIDのみを使う。マスキングは実装時点で組み込み、後付けにしない。詳細は `implementation-patterns.md`。
 
-## このSkillの構成
+### 6. 量産テンプレ化を前提に、Provider は初期セットアップの型を固定する
 
-```
-analytics-integration/
-├── SKILL.md                       # 本ファイル
-└── references/
-    ├── tool-selection.md          # PostHog/GA4/Vercel Analyticsの選定ロジック（野口Profile × Tier）
-    ├── funnel-and-kpi.md          # ファネル定義・イベント設計導出・KPI定義と計算式
-    └── implementation-patterns.md # Next.js App Router 実装パターン・PIIマスキング
-```
-
-## エージェント別の使い方ガイド
-
-### tech-stack-architect
-
-`docs/11-tech-stack/adr/NNNN-analytics.md` として計測構成を記録：
-- Tier A：PostHog 無料枠 + GA4 + Vercel Analytics を標準提案
-- 判断根拠は `tool-selection.md` を引用
-
-### external-designer
-
-`docs/20-external-design/` に画面一覧・機能一覧を作る際、ファネルの各段階に対応する画面・操作を意識して設計する（イベント設計の元ネタになる）。
-
-### marketing-site-builder
-
-営業サイトの LP・価格ページ・CTA に GA4 コンバージョンイベントと Vercel Analytics を組み込む。`marketing-site-playbook` の導線設計と併せて `funnel-and-kpi.md` の登録前ファネルを参照。
-
-### implementation-worker
-
-- PostHog Provider / gtag.js / `@vercel/analytics` を `implementation-patterns.md` の標準パターンで導入
-- イベント送信箇所を内部設計のユースケースに対応づけて実装
-- PII マスキングを実装時点で組み込む（後付けにしない）
-
-### cost-guardian（並行して他担当が整備中の新エージェント）
-
-複数SaaS運用時のツール利用コスト（PostHogイベント量・GA4プロパティ数等の無料枠逸脱リスク）を横断監視する役割を担う見込み。本Skillの`tool-selection.md`の無料枠情報を判断材料として参照される想定。
-
-### implementation-reviewer
-
-- イベント命名の一貫性、二重計測、PII混入を `implementation-patterns.md` のチェックリストでレビュー
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `tool-selection.md` | 計測ツール選定時（最初に読む） |
-| `funnel-and-kpi.md` | ファネル・KPI設計時、外部設計からのイベント導出時 |
-| `implementation-patterns.md` | 実装時、PIIマスキング設計時 |
+1名運用で複数SaaSを並行するため、PostHog Provider・gtag.js・`@vercel/analytics` の組み込みは**案件ごとに設計し直さず、標準パターンを再利用**する。レビューではイベント命名の一貫性・二重計測・PII 混入を `implementation-patterns.md` のチェックリストで確認する。
 
 ## 野口さん固有のチェック
 

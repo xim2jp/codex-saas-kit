@@ -1,19 +1,11 @@
 ---
 name: iac-multicloud
-description: AWS / GCP / Azure に対応した Infrastructure as Code（IaC）の知識集。Terraform / OpenTofu を第一選択とし、プロバイダ別の実装パターン（AWS ECS Fargate・GCP Cloud Run・Azure Container Apps）、State 管理（S3/GCS/Azure Blob）、環境分離（dev/stg/prod）、モジュール設計、Terraform MCP サーバーによる最新プロバイダ/モジュール参照、セキュリティスキャン（tfsec/Checkov/Trivy）、コスト見積り、ドリフト検出、CI/CD 連携（plan→承認→apply）を収録する。Tier A（Vercel+Supabase）では IaC 最小、Tier B/C で本格運用。技術スタック選定・内部設計・実装・運用の各フェーズで tech-stack-architect / internal-designer / implementation-worker / cost-guardian らが参照する。「IaC」「Terraform」「OpenTofu」「インフラコード」「CloudFormation」「Bicep」「ECS」「Cloud Run」「Container Apps」「マルチクラウド」「tfstate」で参照。
+description: AWS / GCP / Azure 対応の Infrastructure as Code 知識集。Terraform / OpenTofu を第一選択に、ECS Fargate・Cloud Run・Container Apps の実装パターン、State 管理、環境分離、モジュール設計、Terraform MCP による最新スキーマ参照、tfsec/Checkov/Trivy、コスト見積り、ドリフト検出、plan→承認→apply の CI 連携を収録する。Tier A は IaC 最小、Tier B/C で本格運用。技術選定・インフラ設計・infra/ 実装・監査・運用時に参照する。「IaC」「Terraform」「OpenTofu」「インフラコード」「Bicep」「ECS」「Cloud Run」「Container Apps」「マルチクラウド」「tfstate」で参照。
 ---
 
 # IaC Multicloud Skill
 
 AWS / GCP / Azure を横断する Infrastructure as Code の標準。**手作業のコンソール操作で作ったインフラは再現も監査もレビューもできない**——IaC はインフラを SDLC のレビュー・修正ループ（L1）に乗せるための前提である。
-
-## いつこのSkillを参照するか
-
-- **tech-stack-architect**：Tier B/C 判定時、IaC ツール選定と ADR 記録
-- **internal-designer**：インフラ構成の設計（ネットワーク・コンピュート・DB・シークレット）
-- **implementation-worker**：`infra/` の実装・plan/apply
-- **cost-guardian**：IaC 定義からのコスト見積り
-- **security-auditor**：tfsec/Checkov の結果確認
 
 ## ツール選定（野口Profile）
 
@@ -33,7 +25,7 @@ AWS / GCP / Azure を横断する Infrastructure as Code の標準。**手作業
 
 - `get_latest_provider_version` → `get_provider_capabilities` → `get_provider_details`：リソース定義の正確なスキーマ
 - `search_modules` → `get_module_details`：公式/実績モジュールの再利用（自作より公式 module を優先）
-- 登録：`claude mcp add terraform ...`（本フレームワークでは接続済み。詳細は external-tools-catalog Skill）
+- 登録：`.codex/config.toml` の `[mcp_servers.terraform]`（本フレームワークでは接続済み。詳細は external-tools-catalog Skill）
 
 ## 標準ディレクトリ構成
 
@@ -90,11 +82,11 @@ terraform fmt -check → terraform validate → tfsec（または Trivy）→ Ch
 
 | フェーズ | 作業 |
 |---------|------|
-| Phase 3（技術選定） | tech-stack-architect が IaC 要否・ツールを ADR 化（Tier A は「IaC 不要」も明示的に記録） |
-| Phase 7（内部設計） | internal-designer が `docs/30-internal-design/infra-design.md`（構成図 Mermaid＋モジュール分割）を作成 |
-| Phase 11（実装） | implementation-worker が `infra/` を実装。**タスク0のローカル環境とは別物**（ローカルは Docker、infra/ はクラウド） |
-| Phase 14 並列 | security-auditor が tfsec/Checkov 結果と State 管理・シークレット参照方式を監査 |
-| Phase 16（運用） | ドリフト検出結果と実コストを ops-review に反映 |
+| Phase 7（技術選定） | tech-stack-architect が IaC 要否・ツールを ADR 化（Tier A は「IaC 不要」も明示的に記録） |
+| Phase 11（内部設計） | internal-designer が `docs/30-internal-design/infra-design.md`（構成図 Mermaid＋モジュール分割）を作成 |
+| Phase 15（実装） | implementation-worker が `infra/` を実装。**タスク0のローカル環境とは別物**（ローカルは Docker、infra/ はクラウド） |
+| Phase 18 並列 | security-auditor が tfsec/Checkov 結果と State 管理・シークレット参照方式を監査 |
+| Phase 20（運用） | ドリフト検出結果と実コストを ops-review に反映 |
 
 ## アンチパターン
 

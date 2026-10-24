@@ -1,6 +1,6 @@
 ---
 name: line-liff-development
-description: LINE LIFF アプリ／LINE ミニアプリを Next.js（野口さん Tier A スタック）で高品質に開発・テスト・公開するための知識集。LIFF SDK、LINE ログイン、Supabase Auth とのブリッジ、Messaging API（Flex Message・リッチメニュー・Webhook）、ミニアプリのサービスメッセージ・パーマネントリンク・公開までを網羅する。実装フェーズ（Phase 11）・テストフェーズ（Phase 11-12）・公開で参照する。「LIFF」「LINEミニアプリ」「LINE Mini App」「LINEアプリ」「Messaging API」「LINEログイン」「LINE連携」で起動。
+description: LINE LIFF アプリ／LINE ミニアプリを Next.js（Tier A スタック）で開発・テスト・公開するための知識集。LIFF / ミニアプリの方式選定、LIFF SDK と SSR 対策、LINE ログインと Supabase Auth のブリッジ（ID トークンのサーバ検証）、Messaging API（Flex Message・リッチメニュー・Webhook 署名検証）、ミニアプリのサービスメッセージ・パーマネントリンク・公開、テストとセキュリティチェックを収録する。「LINE で完結させたい」要件の採否判断から技術選定・設計・実装・テスト・公開・レビューまで参照する。「LIFF」「LINEミニアプリ」「LINE Mini App」「LINEアプリ」「Messaging API」「LINEログイン」「LINE連携」で起動。
 ---
 
 # LINE LIFF / Mini App Development Skill
@@ -9,20 +9,19 @@ LINE のプラットフォーム上で動く Web アプリ（**LIFF アプリ**�
 
 **主軸スタック：LIFF SDK（`@line/liff`）+ Next.js（App Router）+ Supabase。** 野口さんの Tier A（Vercel + Supabase + Next.js）にそのまま乗る。LIFF アプリは本質的に「LINE アプリ内ブラウザで動く Next.js Web アプリ」であり、既存の Web 開発資産を再利用できる。
 
-## いつこの Skill を参照するか
+## 参照ファイル
 
-以下の場面で必ず読む：
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/liff-vs-miniapp.md` | LIFF / ミニアプリの違い、チャネル構成、方式選定 | 要件定義での採否判断・技術選定時 |
+| `references/setup-and-nextjs.md` | Create LIFF App、Next.js 統合、SSR 対策、LiffProvider、Vercel 配信 | プロジェクト初期化時、LIFF 組み込み時（必読） |
+| `references/liff-features.md` | LIFF SDK API（profile / sendMessages / shareTargetPicker / scanCodeV2 等） | LIFF SDK の機能（プロフィール・シェア・QR 等）を使う時 |
+| `references/auth-and-supabase.md` | LIFF ログイン × Supabase Auth ブリッジ、ID トークン検証 | 認証ブリッジの設計・実装時（必読） |
+| `references/messaging-api.md` | Messaging API（Webhook / Flex Message / リッチメニュー / push・reply） | Webhook・Flex Message・リッチメニュー実装時 |
+| `references/mini-app-release.md` | ミニアプリチャネル、サービスメッセージ、パーマネントリンク、公開 | ミニアプリの体験設計・公開準備時 |
+| `references/testing-and-security.md` | テスト戦略、トークン検証、Webhook 署名、セキュリティチェック | テスト計画・実装・レビュー時（セキュリティは必読） |
 
-- **要件定義**（Phase 1）：「LINE で完結させたい」要望がある時、LIFF / ミニアプリの採否判断
-- **技術スタック選定**（Phase 3）：LIFF / ミニアプリ / 通常 Web の方式選定を ADR 化する時
-- **外部設計**（Phase 5）：LINE 内での画面遷移、リッチメニュー、トーク画面との連携設計
-- **内部設計**（Phase 7）：LIFF SDK の組み込み方、認証ブリッジ、Webhook ハンドラ設計
-- **実装**（Phase 11）：LIFF / Messaging API のコードを書く時（implementation-worker / line-platform-specialist）
-- **テスト**（Phase 11-12）：LINE アプリ内・外部ブラウザでの動作確認、Webhook テスト
-- **公開**：LIFF アプリの登録、ミニアプリの公開、サービスメッセージ設計時
-- **レビュー**（Phase 14）：トークン検証・Webhook 署名などセキュリティ確認時
-
-## 重要原則（必読）
+## 原則
 
 ### 1. 「LIFF アプリ」と「LINE ミニアプリ」を最初に切り分ける
 
@@ -68,88 +67,20 @@ Messaging API の Webhook はインターネット公開エンドポイント。
 
 `@line/liff` は SemVer（v2.2.0 以降）。**npm パッケージでバージョンを固定**し、CDN を使う場合も `fixed` パスを使う（`edge` は勝手に最新追従して挙動が変わる）。LIFF v2.11.0 以降は `liff.init()` 解決後に URL から認証情報が除去されるため、ページビュー送信は `.then()` 内で行う。
 
-## この Skill の構成
+## 設計で決めること
 
-```
-line-liff-development/
-├── SKILL.md                          # 本ファイル
-└── references/
-    ├── liff-vs-miniapp.md            # LIFF / ミニアプリの違い、チャネル構成、方式選定
-    ├── setup-and-nextjs.md           # Create LIFF App、Next.js 統合、SSR 対策、LiffProvider、Vercel 配信
-    ├── liff-features.md              # LIFF SDK API（profile / sendMessages / shareTargetPicker / scanCodeV2 等）
-    ├── auth-and-supabase.md          # LIFF ログイン × Supabase Auth ブリッジ、ID トークン検証
-    ├── messaging-api.md              # Messaging API（Webhook / Flex Message / リッチメニュー / push・reply）
-    ├── mini-app-release.md           # ミニアプリチャネル、サービスメッセージ、パーマネントリンク、公開
-    └── testing-and-security.md       # テスト戦略、トークン検証、Webhook 署名、セキュリティチェック
-```
+| 領域 | 決めること |
+|------|-----------|
+| 技術選定 | `docs/11-tech-stack/adr/NNNN-line-platform.md` に方式（LIFF アプリ / LINE ミニアプリ / 通常 Web）、必要なチャネル種別、Messaging API 連携の有無、ミニアプリ公開の要否を記録 |
+| 外部設計 | **LINE アプリ内ブラウザの制約**（戻る挙動、ヘッダ、`liff.closeWindow()`）込みの画面遷移、リッチメニュー → LIFF 画面の導線、トーク画面とアプリの行き来。ミニアプリならパーマネントリンク・サービスメッセージの体験 |
+| 内部設計 | LIFF SDK の組み込み（`LiffProvider` + Context）と SSR 回避、LINE ID トークン → Supabase セッションのブリッジ（Route Handler / Edge Function）、Webhook ハンドラの構造・署名検証・冪等性 |
+| テスト | LINE アプリ内 / 外部ブラウザの両方を含める。E2E は外部ブラウザ（`withLoginOnExternalBrowser`）で動く範囲を Playwright でカバーし、LINE アプリ内固有の挙動はモック方針を `testing-and-security.md` に従って決める。Webhook（署名検証・イベント種別）とトークン検証のテストを持つ |
+| レビュー | ID トークンのサーバ検証、Webhook 署名検証、シークレットの配置、SSR 回避を `testing-and-security.md` のチェックリストで確認 |
 
-## エージェント別の使い方ガイド
+### 隣接領域との境界
 
-### tech-stack-architect
-
-LINE 連携要件のある案件で `docs/11-tech-stack/adr/NNNN-line-platform.md` に記録：
-
-- **方式選定**：LIFF アプリ / LINE ミニアプリ / 通常 Web の判断（`references/liff-vs-miniapp.md`）
-- **野口さん適性**：LIFF は Tier A（Vercel + Supabase + Next.js）にそのまま乗る。B2C・地域コミュニティ案件で特に有効
-- ADR に「必要なチャネル種別」「Messaging API 連携の有無」「ミニアプリ公開の要否」を明記
-
-### external-designer
-
-- 画面遷移を **LINE アプリ内ブラウザの制約**（戻る挙動、ヘッダ、`liff.closeWindow()`）込みで設計
-- リッチメニュー → LIFF 画面の導線、トーク画面とアプリの行き来を設計
-- ミニアプリならパーマネントリンク・サービスメッセージの体験設計（`references/mini-app-release.md`）
-
-### internal-designer
-
-- LIFF SDK の組み込み（`LiffProvider` + Context）、SSR 回避方針を設計
-- LINE ID トークン → Supabase セッションのブリッジ（Route Handler / Edge Function）を設計
-- Webhook ハンドラの構造・署名検証・冪等性を設計
-
-### test-planner / tester
-
-- LINE アプリ内 / 外部ブラウザの両方を含むテスト計画（`references/testing-and-security.md`）
-- Webhook テスト（署名検証、イベント種別）、トークン検証のテスト
-
-### e2e-usecase-tester（Phase 12）
-
-- LIFF アプリの E2E は、外部ブラウザ（`withLoginOnExternalBrowser`）で動く範囲を Playwright でカバー
-- LINE アプリ内固有の挙動はモック方針を `references/testing-and-security.md` に従って決める
-
-### implementation-worker
-
-- `references/setup-and-nextjs.md` でプロジェクトに LIFF を組み込み
-- `liff.init()` をクライアント専用で呼ぶ（原則 2）
-- シークレットをフロントに置かない（原則 6）
-
-### implementation-reviewer
-
-- ID トークンのサーバ検証、Webhook 署名検証、シークレットの配置、SSR 回避を確認
-- `references/testing-and-security.md` のセキュリティチェックリストを適用
-
-### line-platform-specialist（専任エージェント）
-
-LIFF / ミニアプリ / Messaging API を横断的に担当。詳細は `agents/line-platform-specialist.md` 参照。本 Skill 全体を必読とする。
-
-### auth-integration-specialist との連携（重要）
-
-- **役割分担**：通常 Web の「LINE ログイン（OAuth ボタン）」は auth-integration-specialist、**LINE 内で動く LIFF / ミニアプリのログイン**は line-platform-specialist。
-- LIFF ログイン → Supabase セッションのブリッジは両者で共同設計（`references/auth-and-supabase.md`）。
-
-### payment-integration-specialist との連携
-
-- LINE ミニアプリ内での課金は **LINE の決済（LINE Pay 等）／自社 Stripe** のどちらを使うか、案件要件で切り分ける。トークアプリ内の物販はミニアプリ + Stripe（外部決済）が一般的。
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `liff-vs-miniapp.md` | 方式選定時（要件定義・技術選定） |
-| `setup-and-nextjs.md` | プロジェクト初期化時、LIFF 組み込み時（必読） |
-| `liff-features.md` | LIFF SDK の機能（プロフィール・シェア・QR 等）を使う時 |
-| `auth-and-supabase.md` | 認証ブリッジの設計・実装時（必読） |
-| `messaging-api.md` | Webhook・Flex Message・リッチメニュー実装時 |
-| `mini-app-release.md` | ミニアプリの公開準備、サービスメッセージ設計時 |
-| `testing-and-security.md` | テスト計画時、実装時、レビュー時（セキュリティは必読） |
+- **ログイン**：通常 Web の「LINE ログイン（OAuth ボタン）」は `auth-integration` の領域、**LINE 内で動く LIFF / ミニアプリのログイン**は本 Skill の領域。LIFF ログイン → Supabase セッションのブリッジは両方の観点で共同設計する（`auth-and-supabase.md`）
+- **課金**：LINE ミニアプリ内での課金は **LINE の決済（LINE Pay 等）／自社 Stripe** のどちらを使うか、案件要件で切り分ける。トークアプリ内の物販はミニアプリ + Stripe（外部決済）が一般的
 
 ## 野口さん固有のチェック
 
@@ -163,9 +94,9 @@ LIFF / ミニアプリ / Messaging API を横断的に担当。詳細は `agents
 - [ ] 1 名運用前提：リッチメニュー・サービスメッセージは更新負荷の小さい構成にする
 - [ ] B2C / 地域コミュニティ案件では LINE をフロントにする利点（メアド入力不要・ほぼ全員が LINE 保有）を活かす
 
-## SaaS 量産戦略への貢献
+## LINE をフロントにする利点
 
-### LINE をフロントにした最小摩擦の獲得
+### 最小摩擦の獲得
 
 野口さんの B2C・地域コミュニティ案件では、**利用者がほぼ全員 LINE を持つ**。LIFF / ミニアプリにすれば：
 

@@ -98,14 +98,34 @@ fi
 # docs/ 構造
 echo ""
 echo "📁 docs/ 構造を初期化..."
-mkdir -p docs/{00-requirements,10-business-design,11-tech-stack/adr,12-brand-design,15-marketing-site/moodboard,15-marketing-site/screenshots,20-external-design/mockups/screenshots,30-internal-design,40-test-plan,41-test-results,50-legal,60-operations/changes,99-pm}
+mkdir -p docs/{00-inputs/materials,01-concept,02-business-strategy,03-requirements,10-business-design,11-tech-stack/adr,12-brand-design,15-marketing-site/moodboard,15-marketing-site/screenshots,20-external-design/mockups/screenshots,30-internal-design,40-test-plan,41-test-results,50-legal,60-operations/changes,99-pm}
 mkdir -p public/images
 mkdir -p tmp/ai-drafts
 
-for dir in docs/00-requirements docs/10-business-design docs/11-tech-stack docs/12-brand-design docs/15-marketing-site docs/20-external-design docs/30-internal-design docs/40-test-plan docs/41-test-results docs/50-legal docs/99-pm; do
+for dir in docs/00-inputs docs/01-concept docs/02-business-strategy docs/03-requirements docs/10-business-design docs/11-tech-stack docs/12-brand-design docs/15-marketing-site docs/20-external-design docs/30-internal-design docs/40-test-plan docs/41-test-results docs/50-legal docs/99-pm; do
   touch "$dir/.gitkeep"
 done
 echo "✅ docs/ 構造作成完了"
+
+# docs/00-inputs/README.md（ユーザー持ち込み資料の置き方、v0.16.0）
+if [ ! -f "docs/00-inputs/README.md" ]; then
+  cat > docs/00-inputs/README.md << 'EOF2'
+# docs/00-inputs/ — ユーザー持ち込み資料（Phase 0）
+
+ここは**あなた（ユーザー・発注者）が資料を置く場所**です。エージェントはこのフォルダの資料を読みますが、書き換えません（`INDEX.md` だけをエージェントが更新します）。
+
+| 置くもの | ファイル名（推奨） | 必須か |
+|---------|------------------|--------|
+| RFP（要件定義策定依頼書） | `rfp.md`（他形式でも可） | 任意。無い案件もあります |
+| 既存の企画書・事業計画書 | `existing-concept.md` | 任意。あれば企画フェーズでそのまま取り込みます（ゼロから聞き直しません） |
+| 参考資料（競合資料・議事録・調査メモ） | `materials/` 配下 | 任意 |
+
+置いたら Codex で「RFP を置いたので始めて」「企画を始めよう」と話しかけてください。PM が Phase 1（企画）から始めます。資料が無くても始められます。
+
+SDLC の流れ：Phase 1 企画 → 2 企画レビュー → 3 ビジネス・マーケティング戦略 → 4 戦略レビュー → 5 要件定義 → …（詳細は AGENTS.md）
+EOF2
+  echo "✅ docs/00-inputs/README.md 配置"
+fi
 
 # .gitignore
 if [ -f ".gitignore" ]; then
@@ -149,39 +169,45 @@ if [ ! -f "docs/99-pm/status.md" ]; then
 - **開始日**: $TODAY
 - **最終更新**: $TODAY
 - **フレームワーク版**: $FRAMEWORK_VERSION
-- **現在フェーズ**: Phase 1 / 14（未着手）
-- **次のアクション**: @requirements-architect で要件定義を開始
+- **現在フェーズ**: Phase 1 / 21（未着手）
+- **次のアクション**: docs/00-inputs/ に RFP・既存企画書があれば配置し、@concept-planner で企画を開始（Phase 1）
 
 ## フェーズ別ステータス
 
 | Phase | 名称 | ステータス | 担当 | 成果物 | Verdict | ループ | 完了日 |
 |-------|------|----------|------|--------|---------|-------|--------|
-| 1 | 要件定義 | ⏳ | requirements-architect | - | - | - | - |
-| 2 | 要件レビュー | ⏳ | requirements-reviewer | - | - | - | - |
-| 3 | 企画 | ⏳ | business-flow-designer 他 | - | - | - | - |
-| 4 | 企画レビュー | ⏳ | planning-reviewer | - | - | - | - |
-| 5 | 外部設計（文書＋画面モック） | ⏳ | external-designer | docs/20-external-design/（mockups/ 含む） | - | - | - |
-| 6 | 外部設計レビュー（2レビュワー並列） | ⏳ | external-design-reviewer + ui-mockup-reviewer | - | - | - | - |
-| 7 | 内部設計 | ⏳ | internal-designer | - | - | - | - |
-| 8 | 内部設計レビュー | ⏳ | internal-design-reviewer | - | - | - | - |
-| 9 | テスト計画 | ⏳ | test-planner | - | - | - | - |
-| 10 | テスト計画レビュー | ⏳ | test-plan-reviewer | - | - | - | - |
-| 11 | 実装＋ユニット/統合テスト | ⏳ | implementation-worker + tester | - | - | - | - |
-| 12 | ユースケースE2Eテスト（必須） | ⏳ | e2e-usecase-tester | docs/41-test-results/usecase-e2e-*.md | - | - | - |
-| 12.5 | 探索的・敵対的テスト（必須） | ⏳ | exploratory-tester | docs/41-test-results/exploratory-*.md | - | - | - |
-| 13 | 要件トレーサビリティ監査（必須） | ⏳ | requirement-traceability-auditor | docs/41-test-results/traceability-audit-*.md | - | - | - |
-| 14 | 実装＋全テスト結果レビュー（+セキュリティ監査並列） | ⏳ | implementation-reviewer + security-auditor | docs/41-test-results/security-audit-*.md | - | - | - |
-| 15 | リリース・計測開始 | ⏳ | project-manager + observability-integration-specialist | docs/60-operations/release-log.md, kpi-baseline.md | - | - | - |
-| 16 | 運用サイクル（常設・繰り返し） | ⏳ | operations-analyst | docs/60-operations/ops-review-*.md | - | - | - |
-| 17 | 改善サイクル起票 | ⏳ | retrospective-facilitator | docs/60-operations/improvement-backlog.md | - | - | - |
+| 0 | 持ち込み資料配置（ユーザー） | ⏳ | （ユーザー） | docs/00-inputs/（rfp.md / existing-concept.md / materials/） | - | - | - |
+| 1 | 企画 | ⏳ | concept-planner | docs/01-concept/concept.md, docs/00-inputs/INDEX.md | - | - | - |
+| 2 | 企画レビュー | ⏳ | concept-reviewer | docs/01-concept/reviews/ | - | - | - |
+| 3 | ビジネス・マーケティング戦略 | ⏳ | business-strategist | docs/02-business-strategy/business-strategy.md | - | - | - |
+| 4 | 戦略レビュー | ⏳ | business-strategy-reviewer | docs/02-business-strategy/reviews/ | - | - | - |
+| 5 | 要件定義 | ⏳ | requirements-architect | docs/03-requirements/requirements.md, upstream-reconciliation.md | - | - | - |
+| 6 | 要件レビュー | ⏳ | requirements-reviewer | - | - | - | - |
+| 7 | 業務設計・技術選定・ブランド（並列） | ⏳ | business-flow-designer + tech-stack-architect + brand-design-strategist | docs/10-business-design/ 11-tech-stack/ 12-brand-design/ | - | - | - |
+| 8 | 業務・技術・ブランドレビュー | ⏳ | planning-reviewer | - | - | - | - |
+| 9 | 外部設計（文書＋画面モック＋営業ポータルモック） | ⏳ | external-designer + marketing-site-builder | docs/20-external-design/（mockups/ 含む）+ docs/15-marketing-site/mockups/ | - | - | - |
+| 10 | 外部設計レビュー（2レビュワー並列） | ⏳ | external-design-reviewer + ui-mockup-reviewer | - | - | - | - |
+| 11 | 内部設計 | ⏳ | internal-designer | - | - | - | - |
+| 12 | 内部設計レビュー | ⏳ | internal-design-reviewer | - | - | - | - |
+| 13 | テスト計画（＋敵対的ケース抽出並列） | ⏳ | test-planner + test-case-adversary | docs/40-test-plan/ | - | - | - |
+| 14 | テスト計画レビュー | ⏳ | test-plan-reviewer | - | - | - | - |
+| 15 | 実装＋ユニット/統合テスト（タスク0＝ローカル開発環境構築） | ⏳ | implementation-worker + tester | docs/41-test-results/local-env-verification-*.md ほか | - | - | - |
+| 16 | ユースケースE2Eテスト（必須） | ⏳ | e2e-usecase-tester | docs/41-test-results/usecase-e2e-*.md | - | - | - |
+| 16.5 | 探索的・敵対的テスト（必須） | ⏳ | exploratory-tester | docs/41-test-results/exploratory-*.md | - | - | - |
+| 17 | 要件トレーサビリティ監査（必須） | ⏳ | requirement-traceability-auditor | docs/41-test-results/traceability-audit-*.md | - | - | - |
+| 18 | 実装＋全テスト結果レビュー（+セキュリティ監査並列） | ⏳ | implementation-reviewer + security-auditor | docs/41-test-results/security-audit-*.md | - | - | - |
+| 19 | リリース・計測開始 | ⏳ | project-manager + observability-integration-specialist | docs/60-operations/release-log.md, kpi-baseline.md | - | - | - |
+| 20 | 運用サイクル（常設・繰り返し） | ⏳ | operations-analyst | docs/60-operations/ops-review-*.md | - | - | - |
+| 21 | 改善サイクル起票 | ⏳ | retrospective-facilitator | docs/60-operations/improvement-backlog.md | - | - | - |
 
-## 運用サイクル（Phase 15-17、v0.15.0）
+## 運用サイクル（Phase 19-21、v0.11.0）
 
 | サイクル | 期間 | ops-review | 改善起票 | 実施サイクル種別 | 状態 |
 |---------|------|-----------|---------|----------------|------|
 
 ## 凡例: ⏳ 待機 / 🚧 進行中 / 🔄 レビュー中 / 🔁 再レビュー / ⛔ Block / ✅ 完了 / ⚠️ エスカレーション
-## 「ループ」列: レビュー実行回数/上限5回（rework-loop.md 準拠。Phase 6・14 は複数レビュワー独立カウント。Block は自動で修正ループ、5回超えで PM エスカレーション）
+## 「ループ」列: レビュー実行回数/上限5回（rework-loop.md 準拠。Phase 10・18 は複数レビュワー独立カウント。Block は自動で修正ループ、5回超えで PM エスカレーション）
+## Phase 0 はエージェント起動なし（資料が無い案件は「持ち込み資料なし」と記録して Phase 1 へ）
 
 ## オンデマンド系ステータス（v0.6.0、起動した案件のみ行を追加）
 
@@ -229,13 +255,13 @@ echo "  - .agents/skills/           スキル（22種）"
 echo "  - .framework-version        $FRAMEWORK_VERSION"
 echo "  - AGENTS.md                 Codex メインコンテキスト（PM ロール）"
 echo "  - PROJECT_LEARNINGS.md      案件知見の記録（重要！）"
-echo "  - docs/                     成果物配置先"
+echo "  - docs/                     成果物配置先（docs/00-inputs/ はあなたの持ち込み資料置き場）"
 echo "  - .github/                  PR 二重レビューゲート（Amazon Q × レビュワーエージェント）"
 echo ""
 echo "🚀 次のステップ:"
 echo "  1. codex を起動（AGENTS.md が自動で読み込まれ、PM ロールが適用される）"
 echo "  2. 「現状を把握して」で現状把握"
-echo "  3. 「要件定義を始めよう」で要件定義開始"
+echo "  3. docs/00-inputs/ に RFP・既存企画書を置き（任意）、「始めよう」で企画開始（Phase 1）"
 echo ""
 echo "🔒 main への PR レビューゲートを有効化（リポジトリ作成後に一度だけ）:"
 echo "  - Amazon Q Developer GitHub App を導入"

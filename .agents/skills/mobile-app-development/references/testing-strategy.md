@@ -160,11 +160,11 @@ jobs:
 
 ## SDLC との接続
 
-- **Phase 9（test-planner）**：本ファイルのピラミッド・端末マトリクスで `test-strategy.md` / `test-cases.md` を作成。E2E は `e2e-scenarios.md` に Maestro フロー前提で記述。
-- **Phase 11（tester）**：Jest + RNTL の Unit / Component を実装・実行。
-- **Phase 12（e2e-usecase-tester）**：`.maestro/` にユースケース E2E を生成・実行し、`docs/41-test-results/usecase-e2e-*.md` にレポート。Web 案件の Playwright を Maestro に読み替える。
-- **Phase 13（requirement-traceability-auditor）**：FunctionalID × Maestro フロー、業務フロー分岐 × E2E で突合。
-- **Phase 14（implementation-reviewer）**：カバレッジ・E2E のブロッカー有無を確認。
+- **Phase 13（test-planner）**：本ファイルのピラミッド・端末マトリクスで `test-strategy.md` / `test-cases.md` を作成。E2E は `e2e-scenarios.md` に Maestro フロー前提で記述。
+- **Phase 15（tester）**：Jest + RNTL の Unit / Component を実装・実行。
+- **Phase 16（e2e-usecase-tester）**：`.maestro/` にユースケース E2E を生成・実行し、`docs/41-test-results/usecase-e2e-*.md` にレポート。Web 案件の Playwright を Maestro に読み替える。
+- **Phase 17（requirement-traceability-auditor）**：FunctionalID × Maestro フロー、業務フロー分岐 × E2E で突合。
+- **Phase 18（implementation-reviewer）**：カバレッジ・E2E のブロッカー有無を確認。
 
 ## アンチパターン
 

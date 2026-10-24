@@ -1,18 +1,11 @@
 ---
 name: cicd-pipeline
-description: SaaS の CI/CD パイプラインを GitHub Actions で構築するための知識集。フレームワークのテスト重厚化（Unit/Integration・E2E 3回連続・ミューテーション・tfsec）と品質ゲートを CI に写像し、PR ゲート（lint/typecheck/テスト/セキュリティ/ビルド）→ プレビューデプロイ → main マージ → 本番デプロイ → ロールバックまでを標準化する。Vercel（Tier A）と AWS ECS/GCP Cloud Run/Azure（Tier B/C、OIDC 認証）のデプロイパターン、Supabase マイグレーションの CI 適用、シークレット管理、キャッシュ最適化、既存の Amazon Q レビューゲート/branch protection との統合を収録する。テスト計画・実装・デプロイ・運用の各フェーズで test-planner / implementation-worker / tester / project-manager らが参照する。「CI/CD」「GitHub Actions」「パイプライン」「自動デプロイ」「プレビュー環境」「ロールバック」「継続的インテグレーション」「デプロイ自動化」で参照。
+description: GitHub Actions で SaaS の CI/CD を構築する知識集。テスト重厚化（E2E 3回連続・ミューテーション・tfsec）と品質ゲートを CI に写像し、PR ゲート→プレビュー→本番デプロイ→ロールバックを標準化する。Vercel（Tier A）と ECS / Cloud Run / Azure（Tier B/C、OIDC）のデプロイ、Supabase マイグレーションの順序、シークレット管理、キャッシュ最適化、Amazon Q レビューゲート / branch protection との統合を収録する。テスト計画の CI 節、workflows 実装、本番リリース・ロールバック時に参照する。「CI/CD」「GitHub Actions」「パイプライン」「自動デプロイ」「プレビュー環境」「ロールバック」「継続的インテグレーション」「デプロイ自動化」で参照。
 ---
 
 # CI/CD Pipeline Skill
 
 CI/CD はフレームワークの品質ゲート（L1 ループ）を**人が忘れても機械が強制する**仕組みに変換する装置。「ローカルでは通った」を撲滅し、デプロイを CI/CD 経由のみに一本化する（NFR の運用・保守性既定値）。
-
-## いつこのSkillを参照するか
-
-- **test-planner**（Phase 9）：test-strategy.md の「CI/CD連携」節を書くとき
-- **implementation-worker**（Phase 11）：`.github/workflows/` の実装（タスク0のローカル環境構築とセットで CI も最初に組む）
-- **tester / e2e-usecase-tester**：CI 上でのテスト実行構成
-- **project-manager**：デプロイ Go 後の本番リリース手順、ロールバック
 
 ## 標準パイプライン（品質ゲートの写像）
 
@@ -34,7 +27,7 @@ main
 ├── supabase db push            （マイグレーション適用。後述の順序を厳守）
 └── production deploy           （Vercel --prod / Tier B は ECR push → ECS サービス更新）
         ↓
-リリース記録（release-log.md へ追記【Phase 15 / 軽量サイクル step5】）
+リリース記録（release-log.md へ追記【Phase 19 / 軽量サイクル step5】）
 ```
 
 ### 必須 required checks（branch protection）
@@ -121,10 +114,10 @@ jobs:
 
 ## SDLC への組み込み
 
-- Phase 9：test-planner が test-strategy.md「CI/CD連携」節で required checks とスケジュールジョブを宣言
-- Phase 11：implementation-worker が**タスク0（ローカル環境）の直後に CI を構築**（機能実装が積み上がる前に赤/緑の基準線を引く）
-- Phase 14：implementation-reviewer が「CI が緑であること」をレビュー前提として確認（起動時 Bash アクションに含まれる）
-- Phase 15：本番デプロイと release-log 記録を CI/CD 経由に一本化。ロールバック手順（Vercel: instant rollback / ECS: 前タスク定義に戻す）を release-log.md に明記
+- Phase 13：test-planner が test-strategy.md「CI/CD連携」節で required checks とスケジュールジョブを宣言
+- Phase 15：implementation-worker が**タスク0（ローカル環境）の直後に CI を構築**（機能実装が積み上がる前に赤/緑の基準線を引く）
+- Phase 18：implementation-reviewer が「CI が緑であること」をレビュー前提として確認（起動時 Bash アクションに含まれる）
+- Phase 19：本番デプロイと release-log 記録を CI/CD 経由に一本化。ロールバック手順（Vercel: instant rollback / ECS: 前タスク定義に戻す）を release-log.md に明記
 - 軽量チェンジサイクル：step 4 の縮約ゲート＝この PR ゲートそのもの（別途の手動確認を増やさない）
 
 ## アンチパターン

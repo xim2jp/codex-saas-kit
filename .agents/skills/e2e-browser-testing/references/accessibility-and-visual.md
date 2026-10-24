@@ -254,9 +254,9 @@ test('ダッシュボードの見た目（モック確定後の基準）', async
 
 ## axe-core による a11y 自動チェック
 
-Phase 12（e2e-usecase-tester）の E2E に `@axe-core/playwright` を組み込み、主要画面の a11y 違反を自動検出する。手動テスト（キーボード操作、スクリーンリーダー）を代替するものではないが、**回帰防止**として毎回のテスト実行で効く。
+Phase 16（e2e-usecase-tester）の E2E に `@axe-core/playwright` を組み込み、主要画面の a11y 違反を自動検出する。手動テスト（キーボード操作、スクリーンリーダー）を代替するものではないが、**回帰防止**として毎回のテスト実行で効く。
 
-### Phase 12 への具体的な組み込みコード
+### Phase 16 への具体的な組み込みコード
 
 ```ts
 // tests/e2e/usecases/a11y-critical-pages.spec.ts
@@ -292,12 +292,12 @@ for (const { path, name } of criticalPages) {
 }
 ```
 
-既存の「基本パターン」（本ファイル冒頭）を各ユースケース spec に個別導入するのではなく、上記のように**主要画面横断の a11y スイート**を Phase 12 のユースケースE2Eと並べて1ファイルにまとめるのが実務的（画面追加のたびに配列に足すだけで済む）。
+既存の「基本パターン」（本ファイル冒頭）を各ユースケース spec に個別導入するのではなく、上記のように**主要画面横断の a11y スイート**を Phase 16 のユースケースE2Eと並べて1ファイルにまとめるのが実務的（画面追加のたびに配列に足すだけで済む）。
 
 ### Critical violation の扱い
 
 - **WCAG 2.2 AA** を基準タグ（`wcag2a`, `wcag2aa`, `wcag21aa`, `wcag22aa`）として採用する。日本国内向け SaaS では **JIS X 8341-3**（高齢者・障害者等配慮設計指針、WCAG 2.0 と技術的に整合）にも触れる場面があるが、WCAG 2.2 AA 準拠であれば実質的に JIS X 8341-3 の要求も満たす
-- axe の `impact` が `critical` / `serious` の violation は**リリースブロッカー**として扱う（Phase 14 の implementation-reviewer / security-auditor に引き継ぐ判断材料にする）
+- axe の `impact` が `critical` / `serious` の violation は**リリースブロッカー**として扱う（Phase 18 の implementation-reviewer / security-auditor に引き継ぐ判断材料にする）
 - `impact: moderate` / `minor` は記録した上で Warning 扱い（即ブロックしない）
 - 既知の違反で改修が別途計画されているものは `disableRules` で明示的に一時許容し、レポートにその理由と改修予定を記載する（黙って握りつぶさない）
 

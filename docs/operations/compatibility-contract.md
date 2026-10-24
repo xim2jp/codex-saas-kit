@@ -6,7 +6,7 @@
 
 1. **安定APIの破壊的変更は MAJOR バージョンでのみ許可**（現在 v0.x のため、実質的に「やらない」。やむを得ない場合は移行手順を CHANGELOG に必ず記載）
 2. **内部実装は MINOR / PATCH で自由に改善**してよい（派生システムはエクスポートを受けるだけで品質が上がる）
-3. **フェーズ番号は追加のみ（Additive）**：既存フェーズの番号変更・削除は禁止。拡張は 12.5 / 15-17 のように挿入・追記で行う
+3. **フェーズ番号は追加のみ（Additive）**：既存フェーズの番号変更・削除は禁止。拡張は 16.5 / 19-21 のように挿入・追記で行う。**唯一の例外として v0.16.0 で全フェーズを採番し直した**（旧 1-17 → 新 5-21、旧 12.5 → 16.5。上流に Phase 1-4 を新設。アクティブ派生案件ゼロの時点で実施し、移行手順は CHANGELOG v0.16.0 に記載）。以後は再び追加のみ
 4. 派生システム側のカスタマイズは `.codex-manifest`（配布時ハッシュ台帳）で保護される（update-project.sh の3分類適用）
 
 ## 安定API（派生システム・過去成果物が依存してよいもの）
@@ -15,6 +15,7 @@
 
 - `docs/00-99` の番号付きディレクトリ構造と、そこに定義された**ファイル名・命名パターン**
   - 例：`docs/41-test-results/usecase-e2e-YYYYMMDD-HHMM.md`、`reviews/YYYY-MM-DD-<agent>-loopN.md`
+  - v0.16.0 で `docs/00-requirements/` → `docs/03-requirements/` に改名し、`docs/00-inputs/`（ユーザー持ち込み資料）・`docs/01-concept/`・`docs/02-business-strategy/` を追加（BREAKING。移行手順は CHANGELOG）
 - 既存パスの改名・移動は破壊的変更。新規パスの追加は非破壊（MINOR）
 
 ### 2. 機械可読ブロックのフォーマット
@@ -22,7 +23,9 @@
 - **Verdict ブロック**：`VERDICT:` / `LOOP:` / `RETURN_TO:` / `REPORT:` の4行形式（rework-loop.md）
 - **Handoff Block** / **Self-Check ブロック**（artifact-layout.md / lifecycle-loop.md）
 - **bug-escape-ledger.md** の列構成（test-hardening.md）
+- **`docs/00-inputs/` は読み取り専用の入力領域**：エージェントは配置された RFP・既存企画書を書き換えない（取り込み結果は `INDEX.md` と生成物側に記録）
 - フィールドの追加は非破壊、既存フィールドの改名・削除・意味変更は破壊的変更
+- Verdict ブロックの 4 行と `docs/00-inputs/`・`htmldocs/` の書き込み禁止は、Codex に Claude Code 版の hooks 相当の仕組みが無いため、共通契約（sdlc-toolkit SKILL.md）の規約として PM が確認する
 
 ### 3. ステータス・記録ファイルの形式
 
@@ -33,7 +36,7 @@
 
 ### 4. フェーズ体系
 
-- Phase 1-17（+12.5）の番号と責務対応、Phase 12 / 12.5 / 13 のスキップ禁止、Verdict 3値（Approve / Warning / Block）、ループ上限5回
+- Phase 1-21（+16.5）の番号と責務対応（v0.16.0 採番）、Phase 1-4（企画・戦略）および Phase 16 / 16.5 / 17 のスキップ禁止、Verdict 3値（Approve / Warning / Block）、ループ上限5回
 
 ### 5. エージェント名
 
@@ -60,6 +63,7 @@
 ## 自己整合性の検証
 
 - `scripts/check-layout-drift.sh`：エージェント/Skill 定義が参照する `docs/NN-*` パスが artifact-layout.md に定義されているかを機械検証（CI で実行）
+- `scripts/check-harness.sh`：エージェント定義の name 一致・description・共通契約を読む指示の有無、Skill の frontmatter と description 長、版数注記、サイズ、差し戻し先エージェントの実在を検査（基準は harness-authoring-guide.md）
 - 破壊的変更を含む PR は CHANGELOG の該当バージョンに **「BREAKING」** と移行手順を必ず記載
 
 ## バージョニング（feedback-loop.md と共通）

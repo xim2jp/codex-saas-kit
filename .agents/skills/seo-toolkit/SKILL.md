@@ -1,6 +1,6 @@
 ---
 name: seo-toolkit
-description: SaaS の営業サイト・アプリ・ブログを、検索エンジン（Google/Bing）と生成AI検索（AI Overviews/ChatGPT/Perplexity）の両方から発見・引用される状態にするための知識集。キーワード戦略（指名/比較/課題の3段）、Next.js App Router のテクニカルSEO（sitemap/robots/generateMetadata/レンダリング）、構造化データ（JSON-LD）、AIO/LLMO・llms.txt・AIクローラ許可方針、Core Web Vitals、Search Console/GA4 計測を収録する。営業サイト・公開ページの設計/実装フェーズと公開後の改善時に seo-specialist / marketing-site-builder らが参照する。「SEO」「検索エンジン最適化」「キーワード」「構造化データ」「サイトマップ」「AI検索対策」「AIO」「LLMO」「AI Overviews」「llms.txt」「検索流入」「Core Web Vitals」で参照。
+description: SaaS の営業サイト・アプリ・ブログを、検索エンジン（Google/Bing）と生成 AI 検索（AI Overviews/ChatGPT/Perplexity）の両方から発見・引用されるようにする知識集。キーワード戦略（指名/比較/課題の3段）、Next.js App Router のテクニカル SEO（sitemap/robots/metadata/レンダリング）、構造化データ（JSON-LD）、AIO/LLMO・llms.txt・AI クローラ許可方針、Core Web Vitals、Search Console/GA4 計測を収録する。公開ページの設計・実装・テスト・レビューと公開後の改善で参照する。「SEO」「キーワード」「構造化データ」「AI検索対策」「AIO」「LLMO」「AI Overviews」「llms.txt」「検索流入」「Core Web Vitals」で参照。
 ---
 
 # SEO Toolkit Skill
@@ -9,19 +9,9 @@ description: SaaS の営業サイト・アプリ・ブログを、検索エン�
 
 > **このSkillのゴール**：野口さんが量産する月額 SaaS の営業サイトが、①Google 検索で対象キーワードに表示され、②AI Overviews / ChatGPT / Perplexity に**引用・推薦され**、③CTR とコンバージョンにつながる状態を、**1名運用で回せる手順**として作る。
 
-## いつこのSkillを参照するか
+SEO は**横断的関心事**であり、URL 設計から公開後の運用まで続く。
 
-SEO は**横断的関心事**であり、サイト公開後も継続する運用を含む。以下で必ず読む：
-
-- **外部設計（Phase 5 相当）**：URL設計・サイト構造・情報設計・metadata方針の決定時（→ `technical-seo.md`）
-- **営業サイト企画（Phase 4 / `docs/15-marketing-site`）**：キーワード戦略・トピッククラスタ・コンテンツ設計時（→ `seo-strategy.md`）
-- **実装（Phase 11 相当）**：`sitemap.ts`/`robots.ts`/`generateMetadata`/JSON-LD の組み込み時（→ `technical-seo.md` / `structured-data.md`）
-- **AI検索対策**：llms.txt・AI Overviews・引用最適化の設計時（→ `aio-llmo.md`）
-- **性能最適化**：LCP/INP/CLS を SEO 観点で改善する時（→ `core-web-vitals.md`）
-- **公開後の運用**：Search Console / GA4 で計測し改善ループを回す時（→ `measurement.md`）
-- **レビュー時**：インデックス阻害・重複・構造化データの誤り・キーワードカニバリのチェック（→ 各 references のチェックリスト）
-
-## 重要原則（必読）
+## 重要原則
 
 ### 1. 「2つの検索」を同時に最適化する（2026年の前提）
 
@@ -72,70 +62,41 @@ SEO は**横断的関心事**であり、サイト公開後も継続する運用
 - 無料で十分できること：キーワード調査（Search Console / Google サジェスト / People Also Ask）、技術監査（Lighthouse / Search Console）、構造化データ検証（Rich Results Test）
 - 有料が効く場面：競合の被リンク分析・大規模キーワード調査・順位自動追跡（Tier B 案件で計上）
 
-## このSkillの構成
+## 参照ファイル
 
-```
-seo-toolkit/
-├── SKILL.md                  # 本ファイル
-└── references/
-    ├── seo-strategy.md       # キーワード調査・検索意図・トピッククラスタ・E-E-A-T・ローカルSEO
-    ├── technical-seo.md      # Next.js App Router でのテクニカルSEO実装（sitemap/robots/metadata/レンダリング）
-    ├── structured-data.md    # JSON-LD 構造化データ体系（Organization/Product/FAQ/Article/Breadcrumb 等）
-    ├── aio-llmo.md           # 生成AI検索対策（AI Overviews/ChatGPT/Perplexity・llms.txt・引用最適化）
-    ├── core-web-vitals.md    # LCP/INP/CLS の SEO 最適化（Next.js 具体手順）
-    └── measurement.md        # Search Console/GA4/順位・AI可視性の計測と改善ループ
-```
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/seo-strategy.md` | キーワード調査・検索意図・トピッククラスタ・E-E-A-T・ローカル SEO | キーワード／コンテンツ戦略（最初に読む） |
+| `references/technical-seo.md` | Next.js App Router でのテクニカル SEO 実装（sitemap/robots/metadata/レンダリング） | URL 設計・サイト構造の決定時、実装時 |
+| `references/structured-data.md` | JSON-LD 構造化データ体系（Organization/Product/FAQ/Article/Breadcrumb 等） | JSON-LD 実装時 |
+| `references/aio-llmo.md` | 生成 AI 検索対策（AI Overviews/ChatGPT/Perplexity・llms.txt・引用最適化） | AI 検索対策の設計時 |
+| `references/core-web-vitals.md` | LCP/INP/CLS の SEO 最適化（Next.js 具体手順） | 性能最適化時 |
+| `references/measurement.md` | Search Console/GA4/順位・AI 可視性の計測と改善ループ | 公開前チェック、公開後の運用時 |
 
-## エージェント別の使い方ガイド
+## フェーズ別の観点
 
-### external-designer
+### 情報設計（`docs/20-external-design/screen-list.md` に追記、または `docs/15-marketing-site/seo-plan.md`）
 
-URL設計・サイト構造・情報設計を SEO 観点で決定（`docs/20-external-design/screen-list.md` に追記、または `docs/15-marketing-site/seo-plan.md`）：
-- URL 命名規則（短く・意味のある・日本語URLを避けるか統一）
-- サイト階層（トップ → カテゴリ → 詳細の3クリック以内）
-- 正規化方針（canonical、www/非www、トレイリングスラッシュ、index させない領域）
+- URL 命名規則（短く・意味のある・日本語 URL を避けるか統一）
+- サイト階層（トップ → カテゴリ → 詳細の 3 クリック以内）
+- 正規化方針（canonical、www/非 www、トレイリングスラッシュ、index させない領域）
 - 国際化が必要なら hreflang 設計
 
-### marketing-site-builder
+### 実装
 
-営業サイト実装時に SEO を組み込む（このエージェントの SEO 実装は `seo-specialist` に深掘りを委譲可）：
-- `generateMetadata` でページ別 title/description/OG
-- `sitemap.ts` / `robots.ts` の生成
-- JSON-LD（Organization / SoftwareApplication / FAQ / BreadcrumbList）
-- ブログ/知見記事のトピッククラスタ設計
-- llms.txt の配置（`aio-llmo.md`）
+- 営業サイト：`generateMetadata` でページ別 title/description/OG、`sitemap.ts` / `robots.ts`、JSON-LD（Organization / SoftwareApplication / FAQ / BreadcrumbList）、ブログのトピッククラスタ、llms.txt の配置（`aio-llmo.md`）
+- アプリ側の公開ページ（ランディング・ヘルプ・公開プロフィール等）にも metadata と構造化データを適用し、SEO 対象ページでは SSG/ISR を選ぶ。画像は `next/image`、内部リンクを張る
 
-### implementation-worker
+### テスト
 
-- アプリ側の公開ページ（ランディング・ヘルプ・公開プロフィール等）にも metadata と構造化データを適用
-- レンダリング戦略（SSG/ISR）を SEO 対象ページで選択
-- 画像最適化（`next/image`）、内部リンク
-
-### test-planner / tester / e2e-usecase-tester
-
-- `sitemap.xml` / `robots.txt` が 200 で返り、想定URLを含むか検証
-- 主要ページの `<title>` / meta description / canonical / JSON-LD が出力されるか E2E で確認
+- `sitemap.xml` / `robots.txt` が 200 で返り、想定 URL を含むか
+- 主要ページの `<title>` / meta description / canonical / JSON-LD が出力されるかを E2E で確認する
 - Lighthouse SEO スコア・CWV のしきい値チェックを CI に組み込む
 
-### implementation-reviewer
+### レビュー
 
-- `noindex` の付け忘れ/誤付与、canonical の自己参照、重複 title、構造化データの必須プロパティ欠落をレビュー
-- CSR オンリーで重要ページが空HTMLになっていないか
-
-### seo-specialist（専用エージェント）
-
-SEO 戦略・実装・監査・改善を横断的に担保。詳細は `agents/seo-specialist.md` 参照。
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `seo-strategy.md` | キーワード/コンテンツ戦略（最初に読む） |
-| `technical-seo.md` | URL設計・実装時 |
-| `structured-data.md` | JSON-LD 実装時 |
-| `aio-llmo.md` | 生成AI検索対策の設計時 |
-| `core-web-vitals.md` | 性能最適化時 |
-| `measurement.md` | 公開前・運用時 |
+- `noindex` の付け忘れ／誤付与、canonical の自己参照、重複 title、構造化データの必須プロパティ欠落
+- CSR オンリーで重要ページが空 HTML になっていないか
 
 ## 野口さん固有のチェック
 

@@ -4,10 +4,10 @@
 
 ## 基本方針：docs/ が正、ヘルプ記事は生成物
 
-野口さんスタックでは `docs/00-requirements/` や `docs/20-external-design/screen-list.md` に機能一覧・画面仕様が既に存在する。ヘルプセンターをゼロから書くのではなく、**これらを入力にAI（Claude API）で記事ドラフトを生成し、野口さんが最終確認して公開**するフローにする。
+野口さんスタックでは `docs/03-requirements/` や `docs/20-external-design/screen-list.md` に機能一覧・画面仕様が既に存在する。ヘルプセンターをゼロから書くのではなく、**これらを入力にAI（Claude API）で記事ドラフトを生成し、野口さんが最終確認して公開**するフローにする。
 
 ```
-docs/00-requirements/requirements.md ─┐
+docs/03-requirements/requirements.md ─┐
 docs/20-external-design/screen-list.md ─┼─→ Claude API（記事生成） ─→ Markdown/MDX下書き ─→ 野口さんレビュー ─→ 公開
 docs/20-external-design/feature-list.md ┘
 ```

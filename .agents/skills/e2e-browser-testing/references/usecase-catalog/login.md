@@ -210,4 +210,4 @@ Then:  - 自動的に refresh_token で新しい access_token が発行される
 2. **メール検証は Inbucket / Mailosaur**：本番 SMTP 経由は遅延・到着不安定。
 3. **storageState は role 別に分離**：anon / user / admin。`playwright.config.ts` の projects で切り替え。
 4. **UC-LOGIN-04 は最も flaky 化しやすい**：メール到着のタイミング、URL のパース、token_hash の有効期限。`expect.poll` を必ず使う。
-5. **Critical の Block 条件**：UC-LOGIN-01 / -02 / -04 のいずれかが fail かつ実装バグ起因なら、即 No-Go → Phase 11 差し戻し。
+5. **Critical の Block 条件**：UC-LOGIN-01 / -02 / -04 のいずれかが fail かつ実装バグ起因なら、即 No-Go → Phase 15 差し戻し。

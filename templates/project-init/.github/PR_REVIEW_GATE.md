@@ -8,7 +8,7 @@
 PR を main に向けて作成
    │
    ├─ ① レビュワーエージェント側（人間/AIレビュワーの最終承認）
-   │     - 開発中: Phase 14 implementation-reviewer のレビュー（docs/41-test-results 等）
+   │     - 開発中: Phase 18 implementation-reviewer のレビュー（docs/41-test-results 等）
    │     - PR上: Code Owner の approve を必須化（CODEOWNERS + branch protection）
    │
    └─ ② Amazon Q Developer 側（CI: amazon-q-review-gate）

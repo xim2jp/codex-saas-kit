@@ -126,7 +126,7 @@ SKILL.md（Agent Skills 形式）は Claude Code / Codex 共通仕様のため�
 
 ## 7. 補足：別の公式プラグイン `design`
 
-Anthropic には別途公式プラグイン **`design`** がある（デザイン批評・UXライティング／マイクロコピー・アクセシビリティ監査（WCAG 2.1 AA）・デザインシステム管理／ハンドオフ。コード生成・画像生成は行わない）。これは本フレームワークの **Phase 14 レビュー工程**（`external-design-reviewer` / `implementation-reviewer`）と相性が良い可能性があり、**今後の別途検討対象**とする（本決定のスコープ外）。
+Anthropic には別途公式プラグイン **`design`** がある（デザイン批評・UXライティング／マイクロコピー・アクセシビリティ監査（WCAG 2.1 AA）・デザインシステム管理／ハンドオフ。コード生成・画像生成は行わない）。これは本フレームワークの **Phase 18 レビュー工程**（`external-design-reviewer` / `implementation-reviewer`）と相性が良い可能性があり、**今後の別途検討対象**とする（本決定のスコープ外）。
 
 ---
 

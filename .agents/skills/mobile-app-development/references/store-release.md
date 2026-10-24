@@ -142,5 +142,5 @@ eas update --branch production --message "一覧画面のクラッシュ修正"
 
 ## SDLC との接続
 
-- ストア申請準備は **Phase 14 のレビュー後、デプロイ判断**の一部。implementation-reviewer / project-manager は本チェックリストで Go/No-Go を判定する。
-- モバイル方式・対応 OS・課金方式は **Phase 3 の ADR**（`docs/11-tech-stack/adr/`）に記録済みであること。
+- ストア申請準備は **Phase 18 のレビュー後、デプロイ判断**の一部。implementation-reviewer / project-manager は本チェックリストで Go/No-Go を判定する。
+- モバイル方式・対応 OS・課金方式は **Phase 7 の ADR**（`docs/11-tech-stack/adr/`）に記録済みであること。

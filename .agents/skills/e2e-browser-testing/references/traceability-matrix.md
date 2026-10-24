@@ -1,6 +1,6 @@
 # 要件 ⇄ E2E トレーサビリティマトリクス
 
-requirement-traceability-auditor が **Phase 13** で使用する突合の方法論。「業務フロー / 機能一覧で宣言したことが、本当にブラウザで再現できるか」を担保する。
+requirement-traceability-auditor が **Phase 17** で使用する突合の方法論。「業務フロー / 機能一覧で宣言したことが、本当にブラウザで再現できるか」を担保する。
 
 ## なぜ必要か
 
@@ -43,7 +43,7 @@ requirement-traceability-auditor が **Phase 13** で使用する突合の方法
 
 優先度 MUST かつ次のいずれかなら Block：
 - 対応 E2E が `tests/e2e/` 配下に 1 つも存在しない
-- 対応 E2E が存在するが、最新 Phase 12 実行で fail / skip 状態
+- 対応 E2E が存在するが、最新 Phase 16 実行で fail / skip 状態
 
 ### 軸2: 業務フローカバレッジ（business-flow.md × E2E）
 
@@ -106,7 +106,7 @@ requirement-traceability-auditor が以下の順序で実施：
    → 実装済み E2E ファイルを把握
    → 各 spec ファイル内の test.describe / test ブロックを抽出
 
-5. 直近 Phase 12 レポート docs/41-test-results/usecase-e2e-*.md を Read
+5. 直近 Phase 16 レポート docs/41-test-results/usecase-e2e-*.md を Read
    → pass / fail / skip ステータスを抽出
 
 6. 突合
@@ -164,7 +164,7 @@ requirement-traceability-auditor が以下の順序で実施：
 
 | ID | 内容 | 担当 | 期限目安 |
 |----|------|-----|---------|
-| ACT-001 | F-DATA-005 の E2E 追加 | e2e-usecase-tester | Phase 12 再実行前 |
+| ACT-001 | F-DATA-005 の E2E 追加 | e2e-usecase-tester | Phase 16 再実行前 |
 | ACT-002 | F-PROF-010 の E2E 追加 | e2e-usecase-tester | 次イテレーション |
 
 ## 7. Go/No-Go 判断
@@ -173,9 +173,9 @@ requirement-traceability-auditor が以下の順序で実施：
 
 ### 根拠
 - 全 MUST 機能がカバー済み（または）
-- Critical 1件未カバー → No-Go、Phase 11/12 差し戻し
+- Critical 1件未カバー → No-Go、Phase 15/16 差し戻し
 
-### Phase 14（implementation-reviewer）への申し送り
+### Phase 18（implementation-reviewer）への申し送り
 - 重点レビュー観点
 - 既知の限界
 ```
@@ -186,7 +186,7 @@ requirement-traceability-auditor が以下の順序で実施：
 2. **未実装機能をカバレッジに含める** → MVP スコープ外なら feature-list.md 側で除外マーク
 3. **FunctionalID と UC を 1:1 で対応させようとする** → 1 UC が複数 F をカバーする / 1 F が複数 UC で部分検証される、は普通
 4. **業務フローのアクター抽出を Mermaid からの目視に頼る** → セルフチェックリストで補完、可能なら Mermaid CLI でパース
-5. **Phase 12 レポート未存在で実行する** → Phase 12 を待つ、または「Phase 12 未完了のため監査不可」とレポートして Block
+5. **Phase 16 レポート未存在で実行する** → Phase 16 を待つ、または「Phase 16 未完了のため監査不可」とレポートして Block
 
 ## requirement-traceability-auditor 以外のエージェントとの連携
 
@@ -195,8 +195,8 @@ requirement-traceability-auditor が以下の順序で実施：
 | test-planner | カタログ初版段階で `e2e-scenarios.md` に FunctionalID 列を含めるよう責務追加 |
 | test-plan-reviewer | レビュー観点に「全 MUST FunctionalID が UC として宣言されているか」を追加 |
 | e2e-usecase-tester | 監査結果のアクション項目を受け取り、追加 UC を生成・実行 |
-| implementation-reviewer | Phase 14 のレビュー対象に traceability-audit-*.md を必ず含める |
-| project-manager | Block 時に Phase 11 / 12 への差し戻しを判断 |
+| implementation-reviewer | Phase 18 のレビュー対象に traceability-audit-*.md を必ず含める |
+| project-manager | Block 時に Phase 15 / 16 への差し戻しを判断 |
 
 ## 軸③④（画面・APIカバレッジ）について
 

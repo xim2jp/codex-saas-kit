@@ -1,6 +1,6 @@
 ---
 name: ai-calling-philippines
-description: 人間と AI が電話・通話で会話する「AI 通話」システムを、フィリピン国内対応を前提に設計・構築するための知識集。音声 AI パイプライン（STT/LLM/TTS のカスケード型と OpenAI Realtime・Amazon Nova Sonic などの音声対話型）、Vapi・Retell・LiveKit・Pipecat・Twilio・Amazon Connect のサービス選定、フィリピンの電話番号取得、一般電話（PSTN）接続、コスト試算、英語/タガログ語/ビサヤ語（セブアノ語）/タグリッシュの音声認識精度と地域ベースの言語ルーティング、Data Privacy Act 2012・NPC・NTC・SIM 登録法・盗聴禁止法（録音同意）などの法令対応を網羅する。「AI通話」「フィリピン通話」「電話AI」「ボイスAI」「ビサヤ語通話」「セブアノ語」「BPO自動化」「コールセンターAI」で起動。
+description: 人間と AI が電話で会話する「AI 通話」システムをフィリピン国内向けに設計・構築するための知識集。音声 AI パイプライン（カスケード型と OpenAI Realtime・Amazon Nova Sonic などの音声対話型）、Vapi・Retell・LiveKit・Pipecat・Twilio・Amazon Connect の選定、フィリピンの電話番号取得と PSTN 接続、コスト試算、英語/タガログ語/ビサヤ語（セブアノ語）/タグリッシュの認識精度と地域ベースの言語ルーティング、DPA 2012・NPC・NTC・SIM 登録法・盗聴禁止法（録音同意）の法令対応を収録する。実現性判断から設計・実装・eval・運用・レビューまで参照する。「AI通話」「フィリピン通話」「電話AI」「ボイスAI」「ビサヤ語通話」「セブアノ語」「BPO自動化」「コールセンターAI」で起動。
 ---
 
 # AI 通話 Skill（フィリピン国内対応）
@@ -13,19 +13,18 @@ description: 人間と AI が電話・通話で会話する「AI 通話」シス
 >
 > **フィリピン特有の文脈**：フィリピンは世界有数の BPO（コールセンター）大国。AI 通話案件は「(a) フィリピン国内の顧客に英語/タガログ語/ビサヤ語で対応する」だけでなく、「(b) フィリピン拠点が海外クライアント向けに通話業務を担う」形でも現れる。本 Skill は (a) のフィリピン国内対応を主軸に置きつつ、(b) のデータ越境の論点も扱う。
 
-## いつこの Skill を参照するか
+## 参照ファイル
 
-- **要件定義**（Phase 1）：「電話を AI で受けたい/かけたい」要望の実現性・方式・コストを見極める時
-- **技術スタック選定**（Phase 3）：カスケード型/音声対話型、マネージド/自作、PSTN プロバイダの選定を ADR 化する時
-- **外部設計**（Phase 5）：通話フロー（会話シナリオ）、IVR/エスカレーション、画面（管理 UI・通話履歴）設計時
-- **内部設計**（Phase 7）：常駐プロセスの置き場所、Webhook、録音/文字起こしの保存、状態管理設計時
-- **テスト計画**（Phase 9）：通話品質・精度・レイテンシ・シナリオ網羅のテスト戦略策定時
-- **実装**（Phase 11）：音声エージェント・Webhook・通話発信 API を実装する時
-- **テスト**（Phase 11-12）：テスト架電、シナリオ評価（eval）、負荷/同時通話数の検証時
-- **本番運用**：電話番号取得、開示文言、録音同意、監視ダッシュボード設計時
-- **レビュー**（Phase 14）：録音同意（盗聴禁止法）・データ保護・エスカレーション経路・コスト上限の確認時
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/voice-ai-architecture.md` | 音声 AI パイプライン、カスケード型 vs 音声対話型、レイテンシ、割り込み | 方式選定時、レイテンシ/会話設計時（必読） |
+| `references/service-landscape.md` | サービス比較（Vapi/Retell/LiveKit/Pipecat/Twilio/Amazon Connect）、マネージド vs 自作、野口さんスタック適用 | サービス選定時、構築方式の ADR 化時、実装時（必読） |
+| `references/telephony-philippines.md` | PSTN 接続、フィリピンの電話番号取得、SIM 登録法、NTC、SIP、受電/架電 | 一般電話接続が要件にある時、電話番号取得時 |
+| `references/cost-and-accuracy-ph.md` | 分課金コストモデルの試算、BPO 人件費との比較、英語/タガログ語/ビサヤ語/タグリッシュの精度、STT 選定 | コスト試算時、言語別精度の設計/改善・テスト計画時 |
+| `references/compliance-philippines.md` | DPA 2012/NPC、盗聴禁止法（録音同意）、NTC、SIM 登録法、反詐欺規制、AI 開示、データ越境、レビューチェックリスト | 要件定義時、設計時、レビュー時（録音同意・DPA は必読） |
+| `references/implementation-and-ops.md` | 野口さんスタック実装、録音/文字起こし保存、エスカレーション、関数呼び出し、テスト/eval、監視 | 実装時、テスト/eval 設計時、運用設計時 |
 
-## 重要原則（必読）
+## 原則
 
 ### 1. 「AI 通話」を最初に 2 つの方式に切り分ける
 
@@ -85,76 +84,17 @@ description: 人間と AI が電話・通話で会話する「AI 通話」シス
 
 フィリピンは人手のコールセンター文化が成熟しており、AI が詰まったら人間エージェントへ転送できることが期待値。AI が「分からない」「STT 低信頼」「相手の苛立ち」「センシティブな話題」を検知したら**人へ転送（warm transfer）またはコールバック予約**へ逃がす。詳細は `references/implementation-and-ops.md`。
 
-## この Skill の構成
+## 工程ごとに決めること
 
-```
-ai-calling-philippines/
-├── SKILL.md                          # 本ファイル
-└── references/
-    ├── voice-ai-architecture.md      # 音声 AI パイプライン、カスケード型 vs 音声対話型、レイテンシ、割り込み
-    ├── service-landscape.md          # サービス比較（Vapi/Retell/LiveKit/Pipecat/Twilio/Amazon Connect）、マネージド vs 自作、野口さんスタック適用
-    ├── telephony-philippines.md      # PSTN 接続、フィリピンの電話番号取得、SIM 登録法、NTC、SIP、受電/架電
-    ├── cost-and-accuracy-ph.md       # 分課金コストモデルの試算、BPO 人件費との比較、英語/タガログ語/ビサヤ語/タグリッシュの精度
-    ├── compliance-philippines.md     # DPA 2012/NPC、盗聴禁止法（録音同意）、NTC、SIM 登録法、反詐欺規制、AI 開示
-    └── implementation-and-ops.md     # 野口さんスタック実装、録音/文字起こし保存、エスカレーション、テスト/eval、監視
-```
-
-## エージェント別の使い方ガイド
-
-### requirements-architect
-
-- 「電話を AI で」要望に対し、**受電/架電のどちらか**、**会話シナリオの複雑さ**、**月間想定通話分数**、**対象地域と対象言語（英語/タガログ語/ビサヤ語/タグリッシュ）**、**既存電話番号の有無**を要件として確定する
-- フィリピン国内向けか、海外クライアント向け業務かを切り分け、データ越境の論点を整理（`references/compliance-philippines.md`）
-- 録音可否・録音同意・AI 開示を要件定義書に明記
-
-### tech-stack-architect
-
-- `docs/11-tech-stack/adr/NNNN-ai-calling.md` に記録：
-  - **方式選定**：カスケード型 / 音声対話型（原則 1）
-  - **構築方式**：マネージド（Vapi/Retell）/ 自作（LiveKit/Pipecat on ECS Fargate）（原則 2）
-  - **PSTN プロバイダ**：Twilio / Amazon Connect / その他（`references/telephony-philippines.md`）
-  - **対象言語と STT 選定**（`references/cost-and-accuracy-ph.md`）
-- ADR に「想定通話分数 × 分単価」のコスト試算と、**人手エージェント費との比較**を必ず添付（`references/cost-and-accuracy-ph.md`）
-
-### external-designer
-
-- **会話フロー（シナリオ）**を画面遷移図と同じ粒度で設計：挨拶・録音同意 → 本人/用件確認 → 分岐 → 復唱確認 → クロージング → エスカレーション
-- 管理 UI の画面一覧：エージェント設定、通話履歴、文字起こし閲覧、録音再生、発信予約、ダッシュボード
-- IVR・DTMF フォールバック・営業時間外・言語選択（英語/タガログ語/ビサヤ語）と地域ベースの言語ルーティングを設計
-
-### internal-designer
-
-- 常駐プロセスの置き場所（マネージド / ECS Fargate）を確定（原則 2）
-- Webhook（通話開始/終了・文字起こし完了）の受け口と冪等化、録音/文字起こしの Supabase 保存、構造化アウトカム抽出を設計
-- 関数呼び出し（予約・CRM 照会・RAG）とレイテンシ吸収を設計（`references/implementation-and-ops.md`）
-
-### test-planner / tester
-
-- テスト架電（人手 + LLM 駆動の模擬発信者）によるシナリオ評価を計画
-- 精度（フィリピン英語・タガログ語・ビサヤ語・タグリッシュ・固有語・数値）・レイテンシ・割り込み・同時通話数のテスト観点を網羅
-- 通話は決定的でないため eval（シナリオ合否・回帰）を中心に据える（`references/implementation-and-ops.md`）
-
-### implementation-worker
-
-- `references/service-landscape.md` の選定に従い実装。音声ループを Vercel/Supabase Edge に載せない（原則 2）
-- 録音同意・重要情報の復唱確認を会話設計に組み込む（原則 5・6）
-- API キー・チャネルシークレットはサーバ専用、フロントに出さない
-
-### implementation-reviewer
-
-- 録音同意（盗聴禁止法）、DPA 2012 対応、AI 開示、エスカレーション経路、コスト上限、Webhook 署名検証を確認
-- `references/compliance-philippines.md` のチェックリストを適用
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `voice-ai-architecture.md` | 方式選定時、レイテンシ/会話設計時（必読） |
-| `service-landscape.md` | サービス選定時、構築方式の ADR 化時（必読） |
-| `telephony-philippines.md` | 一般電話接続が要件にある時、電話番号取得時 |
-| `cost-and-accuracy-ph.md` | コスト試算時、英語/タガログ語/ビサヤ語/タグリッシュ精度の設計/改善時 |
-| `compliance-philippines.md` | 要件定義時、設計時、レビュー時（録音同意・DPA は必読） |
-| `implementation-and-ops.md` | 実装時、テスト/eval 設計時、運用設計時 |
+| 工程 | 決めること |
+|------|-----------|
+| 要件定義 | **受電/架電のどちらか**、**会話シナリオの複雑さ**、**月間想定通話分数**、**対象地域と対象言語（英語/タガログ語/ビサヤ語/タグリッシュ）**、**既存電話番号の有無**。フィリピン国内向けか海外クライアント向け業務かを切り分け、データ越境の論点を整理。録音可否・録音同意・AI 開示を要件定義書に明記 |
+| 技術選定 | `docs/11-tech-stack/adr/NNNN-ai-calling.md` に方式（カスケード型 / 音声対話型）、構築方式（マネージド Vapi/Retell / 自作 LiveKit・Pipecat on ECS Fargate）、PSTN プロバイダ（Twilio / Amazon Connect / その他）、対象言語と STT 選定を記録。**「想定通話分数 × 分単価」のコスト試算と人手エージェント費との比較を必ず添付** |
+| 外部設計 | **会話フロー（シナリオ）**を画面遷移図と同じ粒度で設計：挨拶・録音同意 → 本人/用件確認 → 分岐 → 復唱確認 → クロージング → エスカレーション。管理 UI（エージェント設定、通話履歴、文字起こし閲覧、録音再生、発信予約、ダッシュボード）。IVR・DTMF フォールバック・営業時間外・言語選択（英語/タガログ語/ビサヤ語）と地域ベースの言語ルーティング |
+| 内部設計 | 常駐プロセスの置き場所（原則 2）、Webhook（通話開始/終了・文字起こし完了）の受け口と冪等化、録音/文字起こしの Supabase 保存、構造化アウトカム抽出、関数呼び出し（予約・CRM 照会・RAG）とレイテンシ吸収 |
+| テスト | テスト架電（人手 + LLM 駆動の模擬発信者）によるシナリオ評価。精度（フィリピン英語・タガログ語・ビサヤ語・タグリッシュ・固有語・数値）・レイテンシ・割り込み・同時通話数。通話は決定的でないため eval（シナリオ合否・回帰）を中心に据える |
+| 実装 | 音声ループを Vercel/Supabase Edge に載せない。録音同意・重要情報の復唱確認を会話設計に組み込む。API キー・チャネルシークレットはサーバ専用 |
+| レビュー | 録音同意（盗聴禁止法）、DPA 2012 対応、AI 開示、エスカレーション経路、コスト上限、Webhook 署名検証を `compliance-philippines.md` のチェックリストで確認 |
 
 ## 野口さん固有のチェック
 
@@ -187,7 +127,7 @@ ai-calling-philippines/
 
 - 受電：着信 → 録音同意 → 本人/用件確認 → FAQ/予約 → 取りこぼし時はコールバック予約
 - 架電：リスト → 発信 → 会話 → アウトカム構造化 → CRM 反映
-- これらを eval（Phase 12）でガードする
+- これらを eval（Phase 16）でガードする
 
 ## アンチパターン（よくある失敗）
 

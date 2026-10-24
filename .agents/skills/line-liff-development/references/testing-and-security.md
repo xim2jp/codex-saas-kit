@@ -65,7 +65,7 @@ vi.mock("@line/liff", () => ({
 - LINE Developers Console の **Webhook 検証**ボタンで疎通確認。
 - イベント JSON を保存しておき、ユニットテストのフィクスチャに使う。
 
-### e2e-usecase-tester（Phase 12）向け
+### e2e-usecase-tester（Phase 16）向け
 
 - LIFF アプリの売上直結フロー（利用開始 → ログイン → コア操作 → 完了）を、**外部ブラウザで動く範囲**で Playwright 化。
 - LINE 内固有（トークへの送信、QR スキャン）はシナリオに「実機手動確認」として明記し、`docs/41-test-results/usecase-e2e-*.md` にカバレッジと手動確認項目を残す。

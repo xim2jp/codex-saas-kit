@@ -1,19 +1,11 @@
 ---
 name: security-compliance
-description: セキュリティのアカウンタビリティ（顧客への説明責任）を確保するための、公的セキュリティ基準と情報ソースの参照集。IPA（中小企業の情報セキュリティ対策ガイドライン・安全なウェブサイトの作り方・SECURITY ACTION）、ISMS/ISO27001（管理策の対応表）、プライバシーマーク（JIS Q 15001）、NIST CSF の各基準への準拠マッピングと、脆弱性データベース（JVN/NVD/CISA KEV/GitHub Advisory）・EOLデータベース（endoflife.date）の監視運用を収録する。成果物として顧客向けセキュリティチェックシート（準拠状況の対外説明文書）を定義し、「一定のセキュリティレベルの確保」を根拠付きで説明できる状態にする。要件定義（NFRセキュリティ）・セキュリティ監査・法務文書・運用サイクル（EOL監視）の各フェーズで security-auditor / requirements-architect / legal-docs-generator / operations-analyst らが参照する。「ISMS」「ISO27001」「プライバシーマーク」「Pマーク」「IPA」「セキュリティ基準」「JVN」「NVD」「脆弱性データベース」「EOL」「サポート終了」「セキュリティチェックシート」「準拠」で参照。
+description: セキュリティのアカウンタビリティ（顧客への説明責任）を確保するための公的基準と情報ソースの参照集。IPA（中小企業の情報セキュリティ対策ガイドライン・安全なウェブサイトの作り方・SECURITY ACTION）、ISMS/ISO27001 管理策、プライバシーマーク（JIS Q 15001）、NIST CSF への準拠マッピング、脆弱性 DB（JVN/NVD/CISA KEV/GitHub Advisory）と EOL DB（endoflife.date）の監視運用、顧客向けセキュリティチェックシートを収録する。NFR セキュリティの確定、技術選定の EOL 確認、セキュリティ監査、法務文書、運用レビューで参照する。「ISMS」「ISO27001」「Pマーク」「IPA」「セキュリティ基準」「JVN」「NVD」「脆弱性データベース」「EOL」「セキュリティチェックシート」「準拠」で参照。
 ---
 
 # Security Compliance Skill
 
 セキュリティを「やっています」ではなく**「この公的基準のこの項目に、この実装で対応しています」と説明できる状態**にするための参照集。認証取得（ISMS/Pマーク）そのものが目的ではなく、**基準を設計の物差しとして使い、顧客説明のアカウンタビリティを確保する**ことが目的。
-
-## いつこのSkillを参照するか
-
-- **requirements-architect**（Phase 1）：NFR セキュリティカテゴリで準拠目標を確定するとき（顧客が ISMS 取得企業の場合は委託先チェックシートへの回答が必要になる）
-- **security-auditor**（Phase 14 並列）：監査観点を公的基準にマッピングするとき、脆弱性 DB を照会するとき
-- **legal-docs-generator**：顧客向けセキュリティチェックシートを生成するとき
-- **operations-analyst**（Phase 16）：EOL・脆弱性の定期監視を ops-review に含めるとき
-- **tech-stack-architect**：採用技術の EOL スケジュールを選定判断に入れるとき
 
 ## 参照する公的基準（物差しとして使う）
 
@@ -48,8 +40,8 @@ description: セキュリティのアカウンタビリティ（顧客への説�
 | 各ベンダーのライフサイクルページ | Supabase の Postgres バージョン、Vercel の Node ランタイム、Stripe API バージョン等はベンダー告知が正 |
 
 **運用ルール**：
-1. **Phase 3（技術選定）**：採用するランタイム・フレームワーク・DB の EOL 日を ADR に記録（EOL まで2年未満のメジャーバージョンを新規採用しない）
-2. **Phase 16（運用）**：operations-analyst が ops-review で「EOL 接近一覧」（12ヶ月以内に EOL を迎える依存）を確認し、更新を改善バックログに起票
+1. **Phase 7（技術選定）**：採用するランタイム・フレームワーク・DB の EOL 日を ADR に記録（EOL まで2年未満のメジャーバージョンを新規採用しない）
+2. **Phase 20（運用）**：operations-analyst が ops-review で「EOL 接近一覧」（12ヶ月以内に EOL を迎える依存）を確認し、更新を改善バックログに起票
 3. EOL 超過の依存を本番で使い続けることは**セキュリティパッチ供給停止**を意味する——チェックシートの説明が崩れるため、EOL 前更新を軽量サイクルの定常業務とする
 
 ## 成果物：顧客向けセキュリティチェックシート
@@ -59,7 +51,7 @@ description: セキュリティのアカウンタビリティ（顧客への説�
 ```markdown
 # セキュリティ対策状況（○○ SaaS）
 
-- 最終更新: YYYY-MM-DD ／ 根拠: security-audit-YYYYMMDD.md（Phase 14 監査）
+- 最終更新: YYYY-MM-DD ／ 根拠: security-audit-YYYYMMDD.md（Phase 18 監査）
 
 ## 1. 準拠フレームワーク
 - IPA「安全なウェブサイトの作り方」: 対応表 §3 ／ SECURITY ACTION: ★★ 自己宣言済み
@@ -83,11 +75,11 @@ description: セキュリティのアカウンタビリティ（顧客への説�
 
 | フェーズ | 作業 |
 |---------|------|
-| Phase 1 | NFR セキュリティカテゴリで準拠目標（IPA 対応表＋SECURITY ACTION 等）を確定 |
-| Phase 3 | 採用技術の EOL 日を ADR に記録 |
-| Phase 14 並列 | security-auditor が監査結果を基準対応表にマッピング |
+| Phase 5 | NFR セキュリティカテゴリで準拠目標（IPA 対応表＋SECURITY ACTION 等）を確定。顧客が ISMS 取得企業なら委託先チェックシートへの回答が必要になる前提で決める |
+| Phase 7 | 採用技術の EOL 日を ADR に記録 |
+| Phase 18 並列 | security-auditor が監査結果を基準対応表にマッピング |
 | 公開前 | legal-docs-generator がチェックシートを生成（プライバシーポリシー等と整合確認） |
-| Phase 16 | EOL 接近・脆弱性対応実績を ops-review に記載、チェックシートを最新化 |
+| Phase 20 | EOL 接近・脆弱性対応実績を ops-review に記載、チェックシートを最新化 |
 
 ## アンチパターン
 
@@ -95,4 +87,4 @@ description: セキュリティのアカウンタビリティ（顧客への説�
 - 認証未取得なのに「ISMS 準拠」を「認証取得」と読める表現で書く（優良誤認）
 - 脆弱性対応を CVSS 点数だけで機械的に優先順位付け（KEV・公開面・悪用容易性で補正する）
 - EOL を迎えた依存の放置（パッチ供給停止＝チェックシート §3 が虚偽化する）
-- チェックシートを一度作って放置（Phase 16 で ops-review と同periodで更新。日付のない対外文書は信頼を毀損）
+- チェックシートを一度作って放置（Phase 20 で ops-review と同じ周期で更新。日付のない対外文書は信頼を毀損）

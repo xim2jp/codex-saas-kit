@@ -244,5 +244,5 @@ Then:  expect.poll で最大 10 秒間以下を待機・検証
 
 1. **案件で要らないものは省略可**：例えば「Email/Password を使わず OAuth のみ」なら UC-SIGNUP-02 はスキップ。ただし `e2e-scenarios.md` に**スキップ理由を明記**する。
 2. **追加 UC は同じテンプレ**：プロジェクト固有の登録経路（招待リンク経由、SSO 経由、LINE 経由等）は UC-SIGNUP-10 以降を採番。
-3. **Critical の Block 条件**：UC-SIGNUP-01 / -02 / -05 のいずれかが fail かつ実装バグ起因なら、即 No-Go → Phase 11 差し戻し。
+3. **Critical の Block 条件**：UC-SIGNUP-01 / -02 / -05 のいずれかが fail かつ実装バグ起因なら、即 No-Go → Phase 15 差し戻し。
 4. **テストユーザーの命名規約**：`signup-${parallelIndex}-${Date.now()}@${TEST_EMAIL_DOMAIN}` で衝突回避（`helpers/users.ts` 参照）。

@@ -1,6 +1,6 @@
 ---
 name: mobile-app-development
-description: Android / iOS ネイティブアプリを Expo + React Native（TypeScript）で高品質に開発・テスト・ストア公開するための知識集。野口さんの Web SaaS スタック（Supabase + Stripe）を再利用しつつ、Expo Router・EAS Build/Submit/Update・Jest/RN Testing Library/Maestro・App Store / Google Play 申請までを網羅する。実装フェーズ（Phase 11）・テストフェーズ（Phase 12）・本番公開で参照する。「モバイルアプリ」「iOSアプリ」「Androidアプリ」「React Native」「Expo」「アプリストア」「EAS」で起動。
+description: Android / iOS ネイティブアプリを Expo + React Native（TypeScript）で開発・テスト・ストア公開するための知識集。Web SaaS スタック（Supabase + Stripe）を再利用しつつ、Expo Router、EAS Build/Submit/Update、Jest / RN Testing Library / Maestro、IAP と Stripe の切り分け、App Store / Google Play 申請と審査リジェクト回避までを網羅する。モバイル要件のある案件の技術選定・設計・テスト計画・実装・公開・レビューで参照する。「モバイルアプリ」「iOSアプリ」「Androidアプリ」「React Native」「Expo」「アプリストア」「EAS」で起動。
 ---
 
 # Mobile App Development Skill
@@ -9,22 +9,9 @@ Android と iOS の**ネイティブアプリを 1 コードベースで高品�
 
 **主軸スタック：Expo SDK + React Native（New Architecture）+ TypeScript。** Web 側（Next.js + Supabase + Stripe）の資産・型・ドメインロジックを最大限再利用する。
 
-> この Skill が前提とする方式選定の結論は [tech-stack-architect](#tech-stack-architect) 節を参照。Flutter / フルネイティブ（Kotlin・Swift）を選ぶ案件では本 Skill は適用外で、その旨を ADR に明記する。
+> この Skill が前提とする方式選定の判断軸は「方式選定（ADR）」節を参照。Flutter / フルネイティブ（Kotlin・Swift）を選ぶ案件では本 Skill は適用外で、その旨を ADR に明記する。
 
-## いつこの Skill を参照するか
-
-以下の場面で必ず読む：
-
-- **技術スタック選定**（Phase 3）：モバイル要件がある案件で Expo/RN の採否を ADR 化する時
-- **外部設計**（Phase 5）：画面遷移・ナビゲーション・プッシュ通知・ディープリンク設計時
-- **内部設計**（Phase 7）：プロジェクト構造・状態管理・データ層・オフライン設計時
-- **テスト計画**（Phase 9）：モバイル特有のテストピラミッド・端末マトリクス策定時
-- **実装**（Phase 11）：Expo プロジェクトのコードを書く時（implementation-worker / mobile-app-specialist）
-- **テスト**（Phase 11-12）：Jest / RN Testing Library / Maestro でのテスト実装・実行時
-- **本番公開**：EAS Build / Submit、App Store / Google Play 申請、OTA 配信設計時
-- **レビュー**（Phase 14）：モバイル実装・テスト・公開準備の妥当性検証時
-
-## 重要原則（必読）
+## 重要原則
 
 ### 1. Expo を「使わない理由がない限り」標準採用する
 
@@ -68,94 +55,58 @@ iOS は Human Interface Guidelines、Android は Material Design に沿う。**W
 
 > **基本方針：OTA で「審査を回避してネイティブ機能を入れる」ことはしない（規約違反）。OTA はバグ修正・JS レベルの改善に限定する。**
 
-## この Skill の構成
+## 参照ファイル
 
-```
-mobile-app-development/
-├── SKILL.md                              # 本ファイル
-└── references/
-    ├── setup-and-tooling.md              # Expo プロジェクト初期化、Dev Client、eas.json、Web 資産共有
-    ├── architecture-patterns.md          # Expo Router、ディレクトリ構造、状態管理、データ層、オフライン
-    ├── supabase-stripe-mobile.md         # Supabase Auth on RN、IAP/RevenueCat、Stripe との切り分け
-    ├── native-capabilities.md            # プッシュ通知、ディープリンク、生体認証、権限、SecureStore、カメラ等
-    ├── ui-accessibility-performance.md   # プラットフォーム UX、アクセシビリティ、ダークモード、性能最適化
-    ├── testing-strategy.md               # Jest 30 + RN Testing Library + Maestro、端末マトリクス、CI
-    └── store-release.md                  # EAS Build/Submit/Update、App Store/Play 申請、審査リジェクト回避
-```
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/setup-and-tooling.md` | Expo プロジェクト初期化、Dev Client、eas.json、Web 資産共有 | 初期化時、EAS セットアップ時、SDK アップグレード時 |
+| `references/architecture-patterns.md` | Expo Router、ディレクトリ構造、状態管理、データ層、オフライン | 内部設計時、実装開始時 |
+| `references/supabase-stripe-mobile.md` | Supabase Auth on RN、IAP / RevenueCat、Stripe との切り分け | 認証・課金の設計/実装時（IAP 規約は要件定義時にも） |
+| `references/native-capabilities.md` | プッシュ通知、ディープリンク、生体認証、権限、SecureStore、カメラ等 | ネイティブ機能の設計・実装時 |
+| `references/ui-accessibility-performance.md` | プラットフォーム UX、アクセシビリティ、ダークモード、性能最適化 | UI 実装時、性能課題・a11y 要件があるとき |
+| `references/testing-strategy.md` | Jest 30 + RN Testing Library + Maestro、端末マトリクス、CI | テスト計画・実装時、CI 設定時 |
+| `references/store-release.md` | EAS Build/Submit/Update、App Store / Play 申請、審査リジェクト回避 | 申請準備時、EAS Submit/Update 設定時、リジェクト対応時 |
 
-## エージェント別の使い方ガイド
+## フェーズ別の設計観点
 
-### tech-stack-architect
+### 方式選定（ADR）
 
-モバイル要件のある案件で、方式選定を `docs/11-tech-stack/adr/NNNN-mobile-stack.md` に記録：
+方式は `docs/11-tech-stack/adr/NNNN-mobile-stack.md` に記録する。Flutter / フルネイティブを選ぶ案件では本 Skill は適用外で、その旨を ADR に明記する。
 
-- **方式選定の判断軸**：
-  - 既存 Web 資産（TypeScript・Supabase・ドメインロジック）の再利用 → **Expo/RN 有利**
-  - 1 名運用での保守コスト最小化 → **Expo/RN 有利**（1 コードベース）
-  - 極限のネイティブ性能・最新 OS API 即対応・重量級 3D/AR → ネイティブ検討
-  - 既存に Flutter/Dart 資産がある → Flutter 検討
-- **野口さん標準**：Expo（Dev Client + EAS）+ React Native + TypeScript
-- ADR には「IAP 対象の課金があるか」「対応 OS バージョン下限」「対象端末」を必ず明記
-- `references/setup-and-tooling.md` の前提条件（Apple Developer Program $99/年、Google Play $25 一度）を費用としてユーザーに提示
+- 既存 Web 資産（TypeScript・Supabase・ドメインロジック）の再利用、1 名運用での保守コスト最小化（1 コードベース）→ **Expo/RN 有利**
+- 極限のネイティブ性能・最新 OS API 即対応・重量級 3D/AR → ネイティブ検討。既存に Flutter/Dart 資産がある → Flutter 検討
+- 野口さん標準は Expo（Dev Client + EAS）+ React Native + TypeScript
+- ADR には「IAP 対象の課金があるか」「対応 OS バージョン下限」「対象端末」を必ず書く。Apple Developer Program（$99/年）・Google Play（$25 一度）の費用をユーザーに提示する
 
-### external-designer
+### 外部設計
 
-- 画面一覧に**ネイティブ特有の画面**を含める：オンボーディング、権限リクエスト画面、プッシュ通知許諾、生体認証、オフライン状態表示、アプリ更新導線
-- 画面遷移図は **Expo Router のファイルベース構造**（タブ / スタック / モーダル）にマッピング
-- ディープリンク / ユニバーサルリンクの URL スキーム設計を `references/native-capabilities.md` に従って明記
-- 課金画面は IAP（RevenueCat Paywall）か Stripe かを `references/supabase-stripe-mobile.md` に従って切り分け
+- 画面一覧に**ネイティブ特有の画面**を含める：オンボーディング、権限リクエスト、プッシュ通知許諾、生体認証、オフライン状態表示、アプリ更新導線
+- 画面遷移図は **Expo Router のファイルベース構造**（タブ / スタック / モーダル）にマッピングする
+- ディープリンク / ユニバーサルリンクの URL スキームを `native-capabilities.md` に従って明記する
+- 課金画面は IAP（RevenueCat Paywall）か Stripe かを `supabase-stripe-mobile.md` に従って切り分ける
 
-### internal-designer
+### 内部設計
 
-- `references/architecture-patterns.md` に従いプロジェクト構造（`app/` ルーティング、`src/` 機能別）を設計
-- 状態管理（Zustand）・サーバ状態（TanStack Query）・ローカル永続化（MMKV）・オフライン戦略を設計
-- Web とのコード共有層（`packages/shared` 等の型・Zod スキーマ・API クライアント）を設計
+- プロジェクト構造（`app/` ルーティング、`src/` 機能別）は `architecture-patterns.md` に従う
+- 状態管理（Zustand）・サーバ状態（TanStack Query）・ローカル永続化（MMKV）・オフライン戦略を決める
+- Web とのコード共有層（`packages/shared` 等の型・Zod スキーマ・API クライアント）を設計する
 
-### test-planner / tester
+### テスト
 
-- `references/testing-strategy.md` のモバイル版テストピラミッドを採用
-- Unit/Component（Jest + RN Testing Library）、E2E（Maestro）の比率と対象を計画
-- 端末マトリクス（iOS/Android の OS バージョン・画面サイズ）を `docs/40-test-plan/test-strategy.md` に明記
-- ネイティブ権限・プッシュ通知・ディープリンク・オフラインのテスト観点を網羅
+- `testing-strategy.md` のモバイル版テストピラミッドで、Unit/Component（Jest + RN Testing Library）と E2E（Maestro）の比率と対象を決める
+- 端末マトリクス（iOS/Android の OS バージョン・画面サイズ）を `docs/40-test-plan/test-strategy.md` に明記する
+- ネイティブ権限・プッシュ通知・ディープリンク・オフラインの観点を網羅する
+- ユースケース E2E は Web の Playwright に代えて、または加えて **Maestro フロー**を `.maestro/` 配下に作り、新規登録・ログイン・課金（IAP サンドボックス）・退会を実機/シミュレータで通す
 
-### e2e-usecase-tester（Phase 12）
+### 認証・決済
 
-- モバイルアプリ案件では Web の Playwright に代えて、または加えて **Maestro フロー**でユースケース E2E を実装
-- `references/testing-strategy.md` の Maestro パターンに従い `.maestro/` 配下にフローを生成
-- 新規登録・ログイン・課金（IAP サンドボックス）・退会の実機/シミュレータ通しテスト
+- 認証はモバイル版 Supabase Auth（SecureStore セッション、OAuth のディープリンクコールバック、Sign in with Apple 必須要件）に従う
+- **iOS でデジタル課金を Stripe で実装すると審査落ち**する。認証側と決済側は必ず連携して切り分ける
 
-### implementation-worker
+### レビュー観点
 
-- `references/setup-and-tooling.md` でプロジェクト初期化
-- `references/architecture-patterns.md` のディレクトリ・命名規約を厳守
-- New Architecture 非対応ライブラリを入れない
-- シークレットをアプリに同梱しない（原則 5）
-
-### implementation-reviewer
-
-- New Architecture 互換、シークレット同梱の有無、IAP/Stripe 切り分け、a11y、`references/store-release.md` の審査リジェクト要因を確認
-- EAS の `production` プロファイルとバージョニング設定の妥当性を確認
-
-### mobile-app-specialist（専任エージェント）
-
-モバイル開発・実機テスト・ストア申請を横断的に担当。詳細は `agents/mobile-app-specialist.md` 参照。本 Skill 全体を必読とする。
-
-### auth-integration-specialist / payment-integration-specialist
-
-- 認証：`references/supabase-stripe-mobile.md` のモバイル版 Supabase Auth（SecureStore セッション、OAuth のディープリンクコールバック、Sign in with Apple 必須要件）を参照
-- 決済：同ファイルの IAP / RevenueCat / Stripe 切り分けを参照。**iOS でデジタル課金を Stripe で実装すると審査落ち**するため、両 specialist は必ず連携する
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `setup-and-tooling.md` | プロジェクト初期化時、EAS セットアップ時、SDK アップグレード時 |
-| `architecture-patterns.md` | 内部設計時、実装開始時（必読） |
-| `supabase-stripe-mobile.md` | 認証・課金の設計/実装時（IAP 規約は要件定義時にも） |
-| `native-capabilities.md` | プッシュ通知・ディープリンク・権限・生体認証・センサー実装時 |
-| `ui-accessibility-performance.md` | UI 実装時、性能課題が出た時、a11y 要件がある時 |
-| `testing-strategy.md` | テスト計画時、テスト実装時、CI 設定時 |
-| `store-release.md` | ストア申請準備時、EAS Submit/Update 設定時、審査リジェクト対応時 |
+- New Architecture 互換、シークレット同梱の有無、IAP/Stripe 切り分け、a11y、`store-release.md` の審査リジェクト要因
+- EAS の `production` プロファイルとバージョニング設定の妥当性
 
 ## 野口さん固有のチェック
 
@@ -187,7 +138,7 @@ mobile-app-development/
 - **課金成功**：Paywall（RevenueCat）→ IAP 購入 → エンタイトルメント反映
 - **退会**：アカウント削除 → サブスク扱い（ストア解約導線の案内）→ データ論理削除
 
-これらは Maestro の E2E で必ずガードする（Phase 12）。
+これらは Maestro の E2E で必ずガードする（Phase 16）。
 
 ## アンチパターン（よくある失敗）
 

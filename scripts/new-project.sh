@@ -41,6 +41,7 @@ cp "$FRAMEWORK_ROOT/templates/project-init/AGENTS.md" ./
 cp "$FRAMEWORK_ROOT/templates/project-init/PROJECT_LEARNINGS.md" ./
 cp "$FRAMEWORK_ROOT/templates/project-init/.framework-version" ./
 cp "$FRAMEWORK_ROOT/templates/project-init/setup.sh" ./
+cp "$FRAMEWORK_ROOT/templates/project-init/mcp-servers.example.toml" ./   # MCP 登録の雛形（必要なものだけ .codex/config.toml に写して使う）
 chmod +x setup.sh
 echo "✅ テンプレートファイル配置"
 

@@ -7,6 +7,39 @@
 
 ## [Unreleased]
 
+## [v0.20.0] - 2026-10-24
+
+Claude Code 版 v0.16.0〜v0.18.0 の移植。v0.18.0・v0.19.0 は欠番（Claude Code 版との版数対応 +2 を保つため）。
+
+### Added
+
+- **企画・戦略の上流 4 フェーズ**（Claude 版 v0.16.0）：concept-planner（Phase 1 企画）・concept-reviewer（2）・business-strategist（3 ビジネス・マーケティング戦略）・business-strategy-reviewer（4）の 4 エージェントと business-strategy-toolkit Skill。`docs/00-inputs/`（RFP・既存企画書の持ち込み、読み取り専用）、`docs/01-concept/`、`docs/02-business-strategy/` を新設し、要件定義は企画×戦略×RFP の突合（upstream-reconciliation.md）から始まる
+- **要件定義 Skill の IPA 準拠刷新**（Claude 版 v0.17.0）：requirements-toolkit に references 4 本（requirements-process・requirements-management・writing-rules・document-guide）と templates 6 本（業務要件一覧 BZ・ユースケース UC・非機能 NFR・権限 ROLE・用語集・要確認事項 OQ）を追加
+- `docs/operations/harness-authoring-guide.md`：エージェント定義・Skill・MCP の執筆ガイド（Codex 版）
+- `scripts/check-harness.sh`：エージェント定義の name 一致・description・共通契約を読む指示、Skill の frontmatter、版数注記、サイズ、差し戻し先の実在を検査
+- MCP 登録の雛形 `templates/project-init/mcp-servers.example.toml`（`.codex/config.toml` の `[mcp_servers.*]` に写す。トークンは `env_http_headers`）。new-project.sh が案件直下に置く
+
+### Changed
+
+- **全フェーズ採番し直し（BREAKING）**：旧 Phase 1-17 → 新 5-21、旧 12.5 → 16.5。`docs/00-requirements/` → `docs/03-requirements/`。移行手順は Claude Code 版 CHANGELOG v0.16.0
+- **全 46 エージェント**（`.codex/agents/*.toml`）を Claude 版 v0.18.0 の役割憲章（入力／成果物／品質基準／判断の軸／連携）から変換し直した。各定義の冒頭に「作業開始時に読む Skill」（共通契約の sdlc-toolkit＋ドメイン Skill）を置く。モデルはセッション既定を継承する
+- `sdlc-toolkit` を全エージェント共通の契約として再構成（pm-playbook・review-protocol・rework-loop を簡潔化）。全 SKILL.md の description を整理し、エージェント別の使い方ガイド節と版数注記を削除
+- `AGENTS.md` テンプレートを簡潔な PM 憲章に書き直した（ルートセッションが PM を担い、専門エージェントだけをサブエージェントとして起動する）
+- `docs/00-inputs/` の読み取り専用とレビューの Verdict ブロック必須は、Claude 版では hooks で強制するが、Codex では共通契約の規約として PM が確認する
+- external-tools-catalog・iac-multicloud・observability-integration-specialist の MCP 登録手順を Codex の設定方式に合わせた
+- 旧モデル名（claude-sonnet-4 系）を Claude Sonnet 5.5（claude-sonnet-5-5）に更新
+- `.codex/config.toml` 冒頭コメントの件数（46 体・29 種）と MCP 雛形の案内を更新
+
+### Fixed
+
+- README のクイックスタートが Claude Code 版リポジトリをクローンしていたのを本キットの URL に修正
+- ROADMAP に v0.17.0 の行が欠けていたのを補った
+- tester のレポート出力先を artifact-layout.md の定義に合わせ、marketing-site-builder 本実装後のレビュー先を implementation-reviewer に修正（Claude 版 v0.18.0 の修正を取り込み）
+
+### 移植しなかったもの
+
+- Claude Code 専用の仕組み：`.claude/settings.json` の hooks、`.claude-plugin/`（plugin 配布）、CI ワークフロー `framework-checks.yml`
+
 ## [v0.17.0] - 2026-08-12
 
 Claude Code 版 v0.15.0（文書カタログ・HTML公開文書体系・文書セット選択制）の移植。

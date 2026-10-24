@@ -1,0 +1,25 @@
+# 案件で使う MCP サーバーの雛形（Codex 版）。使うものだけ .codex/config.toml に写す。
+# トークンは環境変数名を指定して渡し、値をコミットしない。常時接続は増やさない（external-tools-catalog Skill）。
+
+[mcp_servers.sentry]
+url = "https://mcp.sentry.dev/mcp"   # 登録後に `codex mcp login sentry`（OAuth）
+
+[mcp_servers.newrelic]
+url = "https://mcp.newrelic.com/mcp/"
+env_http_headers = { "Api-Key" = "NEW_RELIC_API_KEY" }
+
+[mcp_servers.datadog]
+url = "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp"
+env_http_headers = { "DD_API_KEY" = "DD_API_KEY", "DD_APPLICATION_KEY" = "DD_APPLICATION_KEY" }
+
+[mcp_servers.terraform]
+command = "docker"
+args = ["run", "-i", "--rm", "hashicorp/terraform-mcp-server"]
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp@latest"]
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest", "--headless"]

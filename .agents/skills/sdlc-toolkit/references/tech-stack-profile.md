@@ -11,7 +11,7 @@
 | フレームワーク | Next.js 15 (App Router) | フロント＋APIを一体で扱う案件 |
 | ホスティング | Vercel | インフラ管理を排したい場合 |
 | DB / 認証 | Supabase (PostgreSQL + Auth + Realtime) | RLSでマルチテナント分離する場合 |
-| AI | Claude API (claude-sonnet-4) | LLM活用の中核 |
+| AI | Claude API（Claude Sonnet 5.5（claude-sonnet-5-5）） | LLM活用の中核 |
 | 通知 | LINE Messaging API / メール | スタッフ層がLINE中心の場合 |
 | 決済 | Stripe | SaaS課金 |
 
@@ -23,7 +23,7 @@
 |---------|---------|---------|
 | コンテナ | ECS Fargate | 常駐サービス・マイクロサービス構成 |
 | DB | RDS (PostgreSQL/MySQL) | 既存システム連携・大規模データ |
-| AI | Amazon Bedrock (Claude Sonnet 4.6) | データ残留要件・閉域接続要件 |
+| AI | Amazon Bedrock（Claude 5 系（Sonnet 5.5 など）） | データ残留要件・閉域接続要件 |
 | RAG | Dify (App Runnerでセルフホスト) | RAG基盤を素早く立ち上げる場合 |
 | IaC | Terraform | 再現性・コードレビュー対象化 |
 | CI/CD | GitHub Actions（self-hosted runner含む） | 大規模並列処理対応 |

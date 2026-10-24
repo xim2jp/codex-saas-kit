@@ -1,6 +1,6 @@
 ---
 name: mcp-server-development
-description: SaaS をブラウザUIだけでなく MCP サーバーとして AI エージェントに提供するための知識集。Streamable HTTP / Next.js Route Handler でのホスティング、OAuth 2.1 認可と Supabase Auth ブリッジ、テナント分離、LLM が使いこなせるツール/リソース設計、Stripe Billing Meters による従量課金、MCP Inspector でのテスト、レジストリ登録・発見性までを収録する。技術スタック選定・外部設計・内部設計・実装・課金設計・テスト・公開の全フェーズで参照する。「MCP」「MCPサーバー」「AI向けSaaS」「エージェント向けAPI」「ツール定義」「リモートMCP」「従量課金」「Model Context Protocol」「AIエージェント連携」で参照。
+description: SaaS をブラウザ UI だけでなく MCP サーバーとして AI エージェントに提供するための知識集。Streamable HTTP / Next.js Route Handler でのホスティング、OAuth 2.1 認可と Supabase Auth ブリッジ、テナント分離、LLM が使いこなせるツール／リソース設計、Stripe Billing Meters による従量課金、MCP Inspector でのテスト、レジストリ登録と発見性を収録する。MCP 提供の要否判断から技術選定・設計・実装・課金・テスト・公開まで参照する。「MCP」「MCPサーバー」「AI向けSaaS」「エージェント向けAPI」「ツール定義」「リモートMCP」「従量課金」「Model Context Protocol」で参照。
 ---
 
 # MCP Server Development Skill
@@ -9,20 +9,11 @@ SaaS を**人間向けブラウザUI**だけでなく、**AIエージェント�
 
 > **このSkillのゴール**：野口さんが量産する月額 SaaS に、既存の Next.js アプリへ**低コストで追加できる MCP サーバー**を組み込み、①人間はブラウザUIで、②AI エージェントは MCP 経由のツール呼び出しで、同じ SaaS の価値を利用できる状態を作る。人間向けサブスクと AI 向け従量課金を両立させ、量産・テンプレ化可能な形にする。
 
-## いつこのSkillを参照するか
+## いつ検討するか
 
-MCP 提供は**すべての案件で必須ではない**が、検討漏れを防ぐため以下のタイミングで必ず参照する：
+MCP 提供は**すべての案件で必須ではない**が、要件定義の段階で要否を意識的に判断する（惰性で作らない／惰性で省略しない）。提供すると決めたら、技術選定（ADR）・外部設計（ツール一覧・スコープ）・内部設計（`/api/mcp` 構成・認可ブリッジ・メーター送信）・実装・課金・テスト・公開の各フェーズで本 Skill を参照する。
 
-- **要件定義**：クライアント/エンドユーザーが AI エージェント経由の利用（自動化・他ツール連携）を必要とするか検討する時
-- **技術スタック選定**：MCP 提供を Tier A スタック（Next.js + Vercel + Supabase）にどう統合するかの ADR 記録時
-- **外部設計**：ツール一覧（MCP tools）・リソース・認可スコープの設計時
-- **内部設計**：`/api/mcp` のホスティング構成、認可ブリッジ、従量課金の内部設計時
-- **実装**：mcp-handler を使った Route Handler 実装時
-- **課金設計**：Stripe Billing Meters での従量課金・無料枠設計時
-- **テスト・レビュー**：MCP Inspector での動作確認、CI 組み込み時
-- **公開**：MCP レジストリ登録、接続ガイド作成時
-
-## 重要原則（必読）
+## 重要原則
 
 ### 1. Streamable HTTP + Next.js Route Handler で作る
 
@@ -58,66 +49,25 @@ MCP サーバーは作っただけでは AI エージェントから見つから
 
 > **基本方針：Vercel Functions（Fluid compute）の無料/従量枠の範囲で開始し、mcp-handler の実装パターンをテンプレ化して次の SaaS 案件に流用する。専用インフラの新規構築はしない。**
 
-## このSkillの構成
+## 参照ファイル
 
-```
-mcp-server-development/
-├── SKILL.md                              # 本ファイル
-└── references/
-    ├── architecture-and-hosting.md       # Streamable HTTP/Next.js/Vercelホスティング、stdio比較、スケーリング
-    ├── auth-and-multitenancy.md          # OAuth 2.1、Supabase Authブリッジ、RLSテナント分離、スコープ設計
-    ├── tool-and-resource-design.md       # ツール/リソース/プロンプト設計、命名、schema、エラー設計
-    ├── billing-and-metering.md           # Stripe Billing Metersでの従量課金、無料枠、サブスクとのハイブリッド
-    ├── testing-and-debugging.md          # MCP Inspector、CI組み込み、プログラマティックテスト
-    └── registry-and-discovery.md         # MCPレジストリ登録、.well-known、接続ガイド、発見性
-```
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/architecture-and-hosting.md` | Streamable HTTP / Next.js / Vercel ホスティング、stdio 比較、スケーリング | 技術方式の決定時、実装開始時 |
+| `references/auth-and-multitenancy.md` | OAuth 2.1、Supabase Auth ブリッジ、RLS テナント分離、スコープ設計 | 認可・テナント分離の設計時 |
+| `references/tool-and-resource-design.md` | ツール／リソース／プロンプト設計、命名、schema、エラー設計 | ツール一覧の設計時、スキーマ定義時 |
+| `references/billing-and-metering.md` | Stripe Billing Meters での従量課金、無料枠、サブスクとのハイブリッド | 課金設計時（Stripe 連携の前に） |
+| `references/testing-and-debugging.md` | MCP Inspector、CI 組み込み、プログラマティックテスト | 実装後の動作確認時、CI 組み込み時 |
+| `references/registry-and-discovery.md` | MCP レジストリ登録、.well-known、接続ガイド、発見性 | 公開前・レジストリ登録時 |
 
-## エージェント別の使い方ガイド
+## 設計上の要点
 
-MCP 提供に特化した専用エージェントは現時点では存在しない。**専用エージェントは今後追加予定**とし、それまでは以下のように既存エージェントが本Skillを直接参照する。
-
-### tech-stack-architect
-
-ADR として MCP 提供の要否と方式を記録：MCP提供する/しない、Streamable HTTP + mcp-handler、認可方式（OAuth 2.1 + Supabase Authブリッジ）、従量課金の要否。
-
-### external-designer
-
-MCP tools 一覧（機能一覧の AI 向け版）、スコープ設計、resources/prompts の要否を設計。`architecture-and-hosting.md` / `tool-and-resource-design.md` を参照。
-
-### internal-designer
-
-`/api/mcp` のルーティング構成、認可ブリッジのモジュール設計、Meter Event 送信の非同期同期パターンを設計。`auth-and-multitenancy.md` / `billing-and-metering.md` を参照。
-
-### implementation-worker
-
-`mcp-handler` での実装、`withMcpAuth`/`verifyToken` の実装、Zod によるツール入力スキーマ定義。
-
-### payment-integration-specialist
-
-Stripe Billing Meters の従量課金部分を stripe-integration Skill と合わせて担当。`billing-and-metering.md` を参照。
-
-### auth-integration-specialist
-
-Supabase Auth と MCP OAuth のブリッジ部分を担当。`auth-and-multitenancy.md` を参照。
-
-### tester / e2e-usecase-tester
-
-MCP Inspector での確認、プロトコルレベルのプログラマティックテストを担当。`testing-and-debugging.md` を参照。ブラウザE2Eの `e2e-browser-testing` / `e2e-usecase-tester` とは責務が異なる点に注意。
-
-### seo-specialist
-
-「AIから発見されるSaaS」の観点で `registry-and-discovery.md` の内容を seo-toolkit の AIO/LLMO と併走させる。
-
-## 参照ファイルの読み方
-
-| ファイル | 必読タイミング |
-|---------|--------------|
-| `architecture-and-hosting.md` | MCP提供の技術方式決定時、実装開始時 |
-| `auth-and-multitenancy.md` | 認可・テナント分離の設計時 |
-| `tool-and-resource-design.md` | ツール一覧設計時、実装中のスキーマ定義時 |
-| `billing-and-metering.md` | 課金設計時（Stripe連携前に必読） |
-| `testing-and-debugging.md` | 実装後の動作確認時、CI組み込み時 |
-| `registry-and-discovery.md` | 公開前・レジストリ登録時 |
+- **ADR に残す判断**：MCP を提供する／しない、Streamable HTTP + mcp-handler、認可方式（OAuth 2.1 + Supabase Auth ブリッジ）、従量課金の要否
+- **外部設計**では MCP tools 一覧を「機能一覧の AI 向け版」として作り、スコープ設計と resources / prompts の要否を決める
+- **内部設計**では `/api/mcp` のルーティング、認可ブリッジのモジュール境界、Meter Event を自社 DB 経由で非同期に Stripe へ送る同期パターンを決める
+- **実装**は `mcp-handler`、`withMcpAuth` / `verifyToken`、Zod によるツール入力スキーマで行う
+- **テスト**は MCP Inspector とプロトコルレベルのプログラマティックテストで行う。ブラウザ E2E（`e2e-browser-testing`）とは検証対象が異なる
+- **発見性**は seo-toolkit の AIO/LLMO と同じ「AI から見つかる SaaS」の観点で扱う
 
 ## 野口さん固有のチェック
 

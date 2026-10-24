@@ -1,6 +1,6 @@
 ---
 name: resilience-testing
-description: SaaS の負荷試験・障害耐性テストの知識集。k6 による負荷試験（シナリオ設計・Vercel/Supabase 無料枠での現実的な負荷目標・閾値・CI組み込み）と、Supabase 停止・Stripe API 障害・AI API レート制限/障害時のフォールバック動作を検証する障害シナリオ演習を収録する。「負荷試験」「負荷テスト」「k6」「障害耐性」「カオステスト」「フォールバック」「graceful degradation」で参照。
+description: SaaS の負荷試験・障害耐性テストの知識集。k6 による負荷試験（シナリオ設計・Vercel/Supabase 無料枠での現実的な負荷目標・閾値・CI 組み込み）と、Supabase 停止・Stripe API 障害・AI API レート制限/障害時のフォールバック動作を検証する障害シナリオ演習、graceful degradation の実装パターンを収録する。テスト計画の非機能セクション、外部 API 呼び出しの実装、デプロイ前レビュー、障害後の事後検証で参照する。「負荷試験」「負荷テスト」「k6」「障害耐性」「カオステスト」「フォールバック」「graceful degradation」で参照。
 ---
 
 # Resilience Testing Skill
@@ -9,15 +9,7 @@ SaaS が**想定負荷に耐え、外部依存が落ちても致命的に壊れ�
 
 > **このSkillのゴール**：野口さんが1名運用で量産する月額 SaaS が、①想定ユーザー数の負荷で応答性能が破綻しないこと、②Supabase / Stripe / AI API のいずれかが落ちても**サービス全体が道連れで停止しない**ことを、過剰投資なく検証できる状態にする。
 
-## いつこのSkillを参照するか
-
-- **テスト計画（Phase 9-10 相当）**：`test-planner` が非機能テストセクションに負荷・障害耐性の方針を書く時（→ 本SKILL全体、詳細は各 references）
-- **実装（Phase 11 相当）**：外部 API 呼び出し箇所にタイムアウト・リトライ・フォールバックを実装する時（→ `failure-scenarios.md`）
-- **テスト実装・実行（Phase 11-12 相当）**：`tester` / `e2e-usecase-tester` が k6 スクリプトや障害注入テストを書く時（→ `load-testing-k6.md` / `failure-scenarios.md`）
-- **本番デプロイ前**：`security-auditor` や `implementation-reviewer` と並行して、主要3シナリオの障害耐性が確認できているかチェックする時
-- **本番運用中**：想定外の負荷増・外部サービス障害が発生した際の事後検証・改善時
-
-## 重要原則（必読）
+## 重要原則
 
 ### 1. 野口さんProfile：過剰負荷試験をしない
 
@@ -26,7 +18,7 @@ SaaS が**想定負荷に耐え、外部依存が落ちても致命的に壊れ�
 > **基本方針：MVP は「主要3シナリオ」（通常時の想定同時接続、決済への負荷、想定ピーク時）で十分。網羅的なシナリオマトリクスは、有料プラン移行や契約上のSLAが必要になった段階で拡張する。**
 
 - 無料でできる範囲（k6 OSS ローカル実行、Grafana Cloud k6 無料枠）で完結させる
-- 「念のため」で本番相当の高負荷テストを無料枠の Supabase/Vercel に打ち込み、プロジェクト自体をレート制限や請求超過に追い込まない（テスト対象＝本番环境ではなくステージング/プレビュー環境を使う）
+- 「念のため」で本番相当の高負荷テストを無料枠の Supabase/Vercel に打ち込み、プロジェクト自体をレート制限や請求超過に追い込まない（テスト対象＝本番環境ではなくステージング/プレビュー環境を使う）
 - 目標値は**実際の想定ユーザー数**から逆算する。汎用的な「1000 req/sec」等の数値をそのまま採用しない
 
 ### 2. 負荷試験と障害耐性は別物、両方必要
@@ -44,34 +36,20 @@ SaaS が**想定負荷に耐え、外部依存が落ちても致命的に壊れ�
 
 「外部サービスが落ちたら全機能停止」ではなく、**落ちた依存に関係ない機能は動き続ける**ことを目指す。実装フェーズでこの発想を組み込むほうが、後からテストで検出して直すより低コスト。詳細は `failure-scenarios.md`。
 
-## このSkillの構成
+## 参照ファイル
 
-```
-resilience-testing/
-├── SKILL.md                     # 本ファイル
-└── references/
-    ├── load-testing-k6.md       # k6 シナリオ設計・無料枠での負荷目標・閾値・CI組み込み
-    └── failure-scenarios.md     # Supabase/Stripe/AI API 障害時のフォールバック演習
-```
+| ファイル | 内容 | いつ読むか |
+|---------|------|-----------|
+| `references/load-testing-k6.md` | k6 シナリオ設計・無料枠での負荷目標・閾値・CI 組み込み、スクリプトのテンプレート | テスト計画時、k6 スクリプトの実装・実行時 |
+| `references/failure-scenarios.md` | Supabase / Stripe / AI API 障害時のフォールバック演習と graceful degradation パターン | 外部 API 呼び出しの実装時、障害注入テストの作成時 |
 
-## エージェント別の使い方ガイド
+## フェーズ別の要点
 
-### test-planner
-
-`docs/40-test-plan/non-functional-tests.md` の性能・耐障害性セクションに、本Skill参照と主要3シナリオの宣言を追記する。数値目標（想定同時接続数、許容レイテンシ）はプロジェクトの想定ユーザー数から具体化する。
-
-### tester / e2e-usecase-tester
-
-- k6 スクリプトの実装・実行は `load-testing-k6.md` のテンプレートを流用
-- 障害注入テスト（Supabase 停止相当、Stripe API モックエラー等）は `failure-scenarios.md` のパターンを Playwright / Vitest レベルで再現
-
-### implementation-worker
-
-外部 API 呼び出し（Supabase、Stripe、AI API）にタイムアウト・リトライ・サーキットブレーカー相当の実装を組み込む際、`failure-scenarios.md` の graceful degradation パターンを参照する。
-
-### security-auditor / implementation-reviewer
-
-デプロイ前レビューで「主要3シナリオが検証済みか」をチェックリストとして参照する。
+- **テスト計画**：`docs/40-test-plan/non-functional-tests.md` の性能・耐障害性セクションに主要3シナリオを宣言する。数値目標（想定同時接続数、許容レイテンシ）は案件の想定ユーザー数から具体化する
+- **実装**：Supabase・Stripe・AI API の呼び出しにタイムアウト・リトライ・サーキットブレーカー相当を `failure-scenarios.md` の graceful degradation パターンで組み込む
+- **テスト実装**：k6 スクリプトは `load-testing-k6.md` のテンプレートを流用する。障害注入（Supabase 停止相当、Stripe API モックエラー等）は Playwright / Vitest レベルで再現する
+- **デプロイ前レビュー**：主要3シナリオが検証済みかをチェックリストとして確認する
+- **本番運用中**：想定外の負荷増・外部サービス障害の後に事後検証し、シナリオを補強する
 
 ## 野口さん固有のチェック
 

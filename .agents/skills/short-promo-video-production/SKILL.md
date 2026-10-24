@@ -1,6 +1,6 @@
 ---
 name: short-promo-video-production
-description: SNS縦型ショートプロモ動画（9:16・30秒）を Sora 2 × Remotion ハイブリッドで低コスト制作するための実証済みレシピ集。センセイメモの30秒機能紹介動画（実績コスト約¥130、Sora 2 生成2カット＋Remotion 4カット＋CC BY 4.0 BGM）で確立したワークフローを汎用化したもの。6カット構成の絵コンテ設計、Sora 2 API の実践知（input_reference 解像度一致・moderation 回避・コストログ運用）、Remotion テンプレート（テロップ焼き込み・BGM音量エンベロープ・日本語フォント）、ffmpeg 最終エンコード、権利チェックを収録。promo-video-toolkit（汎用知識集）の下位互換ではなく「実際に一度成功した手順の再現レシピ」。「ショート動画」「30秒動画」「SNS縦型動画」「Sora」「Remotion動画」「プロモ動画制作」で参照。
+description: SNS 縦型ショートプロモ動画（9:16・30秒）を Sora 2 × Remotion ハイブリッドで低コスト制作する実証済みレシピ集。センセイメモの 30 秒機能紹介動画（実績約¥130、Sora 2 生成 2 カット＋Remotion 4 カット＋CC BY 4.0 BGM）の手順を汎用化し、6 カット構成の絵コンテ、Sora 2 API の実践知（input_reference 解像度一致・moderation 回避・コストログ）、Remotion テンプレート（テロップ焼き込み・BGM 音量エンベロープ・日本語フォント）、ffmpeg 最終エンコード、権利チェックを収録する。汎用知識は promo-video-toolkit、本 Skill は一度成功した手順の再現用。「ショート動画」「30秒動画」「SNS縦型動画」「Sora」「Remotion動画」「プロモ動画制作」で参照。
 ---
 
 # Short Promo Video Production — Sora 2 × Remotion 実証済みレシピ

@@ -59,7 +59,7 @@ mkdir -p "$OUT_DIR"
     TOTAL=$(grep -cE '^\|\s*BUG-' "$LEDGER" 2>/dev/null || echo 0)
     UNREFLECTED=$(grep -E '^\|\s*BUG-' "$LEDGER" 2>/dev/null | awk -F'|' '{gsub(/ /,"",$9); if ($9=="" || $9=="-") print}' | wc -l)
     echo "- 記録バグ総数: $TOTAL 件"
-    echo "- チェックリスト反映が空欄の行: $UNREFLECTED 件（**0 でなければ Phase 14 / デプロイ Go の Block 対象**）"
+    echo "- チェックリスト反映が空欄の行: $UNREFLECTED 件（**0 でなければ Phase 18 / デプロイ Go の Block 対象**）"
     echo ""
     echo "### 発見フェーズ別件数"
     echo ""

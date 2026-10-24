@@ -4,7 +4,7 @@ name: PR Review Gate (main)
 # Amazon Q Developer 側のゲートを担う。
 #
 # 設計（野口さんフレームワーク）:
-#   - 二重構造の片方 = レビュワーエージェント（開発中の Phase 14 implementation-reviewer
+#   - 二重構造の片方 = レビュワーエージェント（開発中の Phase 18 implementation-reviewer
 #     ＋ PR での Code Owner approve 必須）。これは branch protection + CODEOWNERS で担保する。
 #   - もう片方 = この Amazon Q Developer ゲート。
 #

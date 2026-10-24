@@ -35,7 +35,10 @@ if (!fs.existsSync(DOCS)) {
 // ---------- 設定 ----------
 
 const PHASE_TITLES = {
-  '00-requirements': '要件定義',
+  '00-inputs': '持ち込み資料（RFP・既存企画書）',
+  '01-concept': '企画',
+  '02-business-strategy': 'ビジネス・マーケティング戦略',
+  '03-requirements': '要件定義',
   '10-business-design': '業務設計',
   '11-tech-stack': '技術スタック',
   '12-brand-design': 'ブランド・デザイン',
@@ -52,12 +55,15 @@ const PHASE_TITLES = {
 
 // ID プレフィックス → 正本（docs/ 相対）。dynamic はファイル探索で解決
 const ID_REGISTRY = {
-  BZ:   { canonical: '00-requirements/business-requirements.md' },
+  OBJ:  { canonical: '01-concept/concept.md' },
+  SEG:  { canonical: '02-business-strategy/business-strategy.md' },
+  KPI:  { canonical: '02-business-strategy/business-strategy.md', fallback: '60-operations/kpi-baseline.md' },
+  BZ:   { canonical: '03-requirements/business-requirements.md' },
   F:    { canonical: '10-business-design/feature-list.md' },
-  NFR:  { canonical: '00-requirements/non-functional.md' },
-  UC:   { canonical: '00-requirements/use-cases.md', fallback: '40-test-plan/e2e-scenarios.md' },
-  US:   { canonical: '00-requirements/user-stories.md' },
-  ROLE: { canonical: '00-requirements/permissions-matrix.md' },
+  NFR:  { canonical: '03-requirements/non-functional.md' },
+  UC:   { canonical: '03-requirements/use-cases.md', fallback: '40-test-plan/e2e-scenarios.md' },
+  US:   { canonical: '03-requirements/user-stories.md' },
+  ROLE: { canonical: '03-requirements/permissions-matrix.md' },
   PS:   { dynamicDir: '10-business-design/business-rules' },
   JOB:  { canonical: '10-business-design/batch-jobs.md' },
   NTF:  { canonical: '10-business-design/notifications.md' },
@@ -67,7 +73,7 @@ const ID_REGISTRY = {
   ENT:  { canonical: '20-external-design/data-model.md' },
   ERR:  { canonical: '20-external-design/error-catalog.md' },
   RSK:  { canonical: '99-pm/risk-register.md' },
-  OQ:   { canonical: '00-requirements/open-questions.md' },
+  OQ:   { canonical: '03-requirements/open-questions.md' },
   CR:   { dynamicDir: '60-operations/changes' },
   BUG:  { canonical: '41-test-results/bug-escape-ledger.md' },
   MK:   { dynamicDir: '15-marketing-site/mockups', asset: true }, // docs/ 内の HTML 実体へリンク
@@ -76,7 +82,7 @@ const ID_REGISTRY = {
 
 // ID 検出パターン（単語境界。コード・リンク内は除外して適用する）
 const ID_PATTERN =
-  /\b(?:NFR-[A-Z]{2,8}-\d{1,3}|UC-[A-Z0-9]{2,12}-\d{1,3}|S-[A-Z0-9]{2,6}-\d{2,4}|ROLE-\d{1,3}|(?:F|BZ|US|PS|JOB|NTF|EXT|API|ENT|ERR|RSK|OQ|MK|CR|BUG)-\d{2,4}|ADR[ -]\d{4})\b/g;
+  /\b(?:NFR-[A-Z]{2,8}-\d{1,3}|UC-[A-Z0-9]{2,12}-\d{1,3}|S-[A-Z0-9]{2,6}-\d{2,4}|ROLE-\d{1,3}|(?:F|BZ|US|PS|JOB|NTF|EXT|API|ENT|ERR|RSK|OQ|MK|CR|BUG|OBJ|SEG|KPI)-\d{2,4}|ADR[ -]\d{4})\b/g;
 
 const GEN_DATE = new Date().toISOString().slice(0, 16).replace('T', ' ');
 
@@ -374,8 +380,8 @@ function pageShell({ title, breadcrumbHtml, bodyHtml, relRoot, meta }) {
   const mermaidTag = fs.existsSync(path.join(OUT, 'assets', 'mermaid.min.js'))
     ? `<script src="${relRoot}assets/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,securityLevel:'loose'});</script>`
     : '';
-  const glossary = mdSet.has('00-requirements/glossary.md')
-    ? `<a href="${relRoot}00-requirements/glossary.html">用語集</a> · ` : '';
+  const glossary = mdSet.has('03-requirements/glossary.md')
+    ? `<a href="${relRoot}03-requirements/glossary.html">用語集</a> · ` : '';
   return `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -555,7 +561,7 @@ for (const dir of topDirs) {
   const quick = [];
   if (mdSet.has('99-pm/status.md')) quick.push(`<a class="card" href="99-pm/status.html">📊 進捗ステータス</a>`);
   if (mdSet.has('99-pm/document-set.md')) quick.push(`<a class="card" href="99-pm/document-set.html">📋 文書セット定義</a>`);
-  if (mdSet.has('00-requirements/glossary.md')) quick.push(`<a class="card" href="00-requirements/glossary.html">📖 用語集</a>`);
+  if (mdSet.has('03-requirements/glossary.md')) quick.push(`<a class="card" href="03-requirements/glossary.html">📖 用語集</a>`);
   quick.push(`<a class="card" href="id-index.html">🔎 ID 索引</a>`);
   body += `<div class="cards">${quick.join('')}</div>`;
 

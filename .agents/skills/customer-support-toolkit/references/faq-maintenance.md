@@ -81,7 +81,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 async function draftFaqFromCluster(productSlug: string, inquiries: string[]) {
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-5-5",
     max_tokens: 600,
     system: `
 あなたはSaaS「${productSlug}」のFAQ作成アシスタントです。

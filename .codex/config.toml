@@ -1,7 +1,7 @@
 # Noguchi SaaS Framework — Codex プロジェクト設定
 #
-# - エージェント定義: .codex/agents/*.toml（42体。Codex が自動発見する）
-# - スキル:           .agents/skills/<name>/SKILL.md（28種。Codex が自動発見する）
+# - エージェント定義: .codex/agents/*.toml（46体。Codex が自動発見する。project-manager はルートセッションが AGENTS.md 経由で読むロール）
+# - スキル:           .agents/skills/<name>/SKILL.md（29種。Codex が自動発見する）
 # - メインコンテキスト: プロジェクトルートの AGENTS.md（PM ゲートウェイ・ロール）
 #
 # MCP サーバー（Playwright / Sentry / Datadog / New Relic / Terraform 等）は案件ごとに
@@ -9,6 +9,7 @@
 # .agents/skills/observability-integration/references/mcp-servers.md と
 # .agents/skills/e2e-browser-testing/references/playwright-mcp.md と
 # .agents/skills/terraform-mcp/SKILL.md（HashiCorp 公式 Terraform MCP）を参照。
+# 雛形は templates/project-init/mcp-servers.example.toml（new-project.sh が案件直下に置く）。
 
 # Web 検索（WebSearch 相当）。多数のエージェントが競合調査・最新仕様確認で使用する
 web_search = "live"
