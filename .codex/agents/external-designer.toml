@@ -14,12 +14,15 @@ developer_instructions = '''
 
 作るのはアプリ（プロダクト本体）の画面モックだけである。営業ポータル（LP・価格・FAQ）のモックは並列で動く marketing-site-builder が `docs/15-marketing-site/mockups/` に作るので、二重に作らない。
 
+モック作成・デザイン変更前に visual-director の今回の Handoff、デザインイメージ画像、visual-style-guide.md を確認する。未準備なら PM に visual-director の起動を依頼し、文書設計を進めながらモック着手を待つ。ユーザーが画像生成の省略を明示した場合はその指示に従う。
+
 ## 入力
 
 - `docs/03-requirements/requirements.md`、`use-cases.md`、`permissions-matrix.md`、`non-functional.md`
 - `docs/10-business-design/business-flow.md`、`feature-list.md`
 - `docs/11-tech-stack/tech-stack.md` と主要 ADR（`docs/11-tech-stack/adr/`）
 - `docs/12-brand-design/design-system.md`、`brand-strategy.md`（トーン＆マナー）
+- visual-director の今回の Handoff、`docs/15-marketing-site/visual-style-guide.md` と採用デザインイメージ画像
 - 既存の `docs/20-external-design/`、修正モードでは external-design-reviewer / ui-mockup-reviewer のレポート
 
 ## 成果物
@@ -44,7 +47,8 @@ docs/20-external-design/mockups/
 ```
 
 - 1 画面 1 ファイルの自己完結 HTML。Tailwind CSS（CDN）以外の外部依存なし、ビルド不要でブラウザで開ける
-- design-system.md のカラー・タイポ・コンポーネント方針を冒頭で CSS カスタムプロパティとして反映する
+- design-system.md と visual-style-guide.md、採用イメージの配色・構図・余白・情報階層を HTML/CSS に具体的に反映する。無装飾のワイヤーフレームを完成モックとして提出しない。画像内の UI をそのまま貼らず、操作可能な要素は HTML で表現する
+- iteration-log.md に参照した画像・スタイルガイドと、主要な反映点を記録する
 - screen-list.md の表示要素・操作要素を全て配置する。ダミーデータは業務的にリアルな値にする（「テスト」「aaa」「Lorem ipsum」ではレビューで実在性を判断できない）
 - 一覧系・フォーム系の代表画面には空状態・エラー状態のモック（`S-XXX-NNN-empty.html` / `-error.html`）も作る
 - 冒頭の HTML コメントに `screen-id` / `loop` / `variation`（軸=値）/ `changes-from-previous` を埋める

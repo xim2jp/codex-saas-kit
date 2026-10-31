@@ -10,7 +10,7 @@
 │   要件・ブランド戦略を読み込み → 3-5枚のスタイル候補をAI生成 │
 │   出力: docs/15-marketing-site/moodboard/option-{1-5}.png   │
 └─────────────────────────────────────────────────────────────┘
-                          ↓ ユーザーが選択
+                          ↓ ユーザーの指定、または visual-director の推奨を採用
 ┌─────────────────────────────────────────────────────────────┐
 │ Phase B: スタイルガイド明文化（visual-director）             │
 │   選択されたムードボードからスタイル指針を言語化              │
@@ -25,8 +25,8 @@
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ Phase D: HTML実装（marketing-site-builder）                  │
-│   visual-style-guide.md と代表挿絵を「参考」に実装           │
+│ Phase D: HTMLモック → 実装（external-designer / builder）   │
+│   画像・ガイドの構図、色、余白をモックに反映してから実装   │
 │   実装は野口さんスタック（Next.js + Tailwind + shadcn/ui）   │
 │   出力: src/app/(marketing)/*                                │
 └─────────────────────────────────────────────────────────────┘
@@ -52,13 +52,13 @@
 | A | visual-director | ムードボードAI生成 |
 | B | visual-director | スタイルガイド明文化 |
 | C | visual-director | 代表挿絵確定、プロンプトテンプレート抽出 |
-| D | marketing-site-builder | HTML実装（visual-style-guideを必読） |
+| D | external-designer / marketing-site-builder | HTMLモック、その後に本実装（画像と visual-style-guide を必読） |
 | E | page-designer | 追加挿絵量産（プロンプトテンプレート再利用） |
 | F | page-designer | Playwrightスクリーンショット |
 
 **重要な原則**：
 - visual-director は「スタイルの設計者」、page-designer は「スタイル準拠の実行者」
-- AI画像はあくまで「参考」。HTMLエージェントは画像を真似ない、スタイルガイドに従う
+- AI画像はデザインの参考として配色・構図・余白・情報階層を HTML/CSS に反映する。画像内の UI 自体は貼り付けず HTML で作る
 - プロンプトテンプレートは visual-director が作成し、page-designer が再利用する
 
 ## ディレクトリ構造
