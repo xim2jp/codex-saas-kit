@@ -10,7 +10,7 @@ description: 複数の実行可能な選択肢を比較して選ぶ際に、jevt
 ## 手順
 
 1. ユーザーの指示、必須要件、権限、予算などで不適合の候補を除外し、選択肢・判断基準・必要最小限の事実を整理する。候補が一つしか残らなければ呼ばない。
-2. `JEV_API_KEY` が環境にあり、外部送信が許される場合、下の API に送る。秘密情報、認証情報、個人情報、未公開コード等の機密は送らず、必要なら抽象化する。送信自体が禁止されている場合や、判断に必要な情報を安全に送れない場合は呼ばない。呼び出しには課金が発生するため、予算やユーザーの制約を守る。
+2. 利用可能な API キーがあり、外部送信が許される場合、下の API に送る。秘密情報、認証情報、個人情報、未公開コード等の機密は送らず、必要なら抽象化する。送信自体が禁止されている場合や、判断に必要な情報を安全に送れない場合は呼ばない。呼び出しには課金が発生するため、予算やユーザーの制約を守る。
 3. `choice`、`confidence`、`probabilities` を検査する。返された候補が送信した候補の一つであることを確認し、確信度を正しさの保証とみなさない。要件・根拠と照合して自分で最終判断する。判断が拮抗・不確実なら追加調査し、必要な場合だけユーザーに確認する。
 4. ADR 等の判断記録が求められる場合は、候補、判断基準、採否理由、Jev の使用と結果・限界、結果を採用しなかった場合の理由を記録する。API キーや送信した機密は記録しない。
 
@@ -18,13 +18,35 @@ Jev は助言であり、ユーザーの明示的な選択、承認、権限、�
 
 ## API の使い方
 
-[jevtypesafeai.com の API ドキュメント](https://jevtypesafeai.com/docs) を正本とする。TypeSafe AI 本家ではなく、独立サービスの `POST https://jevtypesafeai.com/api/v1/decide` を使う。`JEV_API_KEY` はこのサービスの `jv_live_…` キー。Bearer 認証、JSON、`state` と `questions` が必要。`choice` の `criteria` は候補 ID と具体的な説明の対応表（最大 255 件）。`model` は省略可能で、既定は `jev-latest`。複数の独立した質問は一度のリクエストにまとめられる。
+[jevtypesafeai.com の API ドキュメント](https://jevtypesafeai.com/docs) を正本とする。TypeSafe AI 本家ではなく、独立サービスの `POST https://jevtypesafeai.com/api/v1/decide` を使う。キーはこのサービスの `jv_live_…` キー。明示された `JEV_API_KEY` を優先し、未設定・空の場合だけ `~/.hermes/.env` の `TYPESAFE_API_KEY` を読む。環境変数が指定されている場合は無効でも別のキーに切り替えず、401 を報告する。ファイルがない、読めない、対象キーがない場合は未設定として扱う。`.env` 全体を `source` せず、対象の値だけを取得する。Bearer 認証、JSON、`state` と `questions` が必要。`choice` の `criteria` は候補 ID と具体的な説明の対応表（最大 255 件）。`model` は省略可能で、既定は `jev-latest`。複数の独立した質問は一度のリクエストにまとめられる。
 
-以下は標準ライブラリのみの実行例。`state` と候補は実際の判断に合わせて置き換える。キーは環境変数から読み、コマンド引数・ログ・ファイルには書かない。
+以下は標準ライブラリのみの実行例。`state` と候補は実際の判断に合わせて置き換える。キーは環境変数、または指定の既存 `.env` ファイルから読み、コマンド引数・ログ・新たなファイルには書かない。
 
 ```bash
 python3 - <<'PY'
-import json, os, urllib.request
+import json, os, re, shlex, urllib.request
+from pathlib import Path
+
+def get_api_key():
+    key = os.environ.get("JEV_API_KEY", "").strip()
+    if key:
+        return key
+    path = Path.home() / ".hermes" / ".env"
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError):
+        raise RuntimeError("Jev API key unavailable") from None
+    for line in lines:
+        match = re.match(r"^\s*(?:export\s+)?TYPESAFE_API_KEY\s*=\s*(.*)$", line)
+        if match:
+            try:
+                values = shlex.split(match.group(1), comments=True, posix=True)
+            except ValueError:
+                raise RuntimeError("Invalid TYPESAFE_API_KEY entry") from None
+            if len(values) == 1 and values[0]:
+                return values[0]
+            raise RuntimeError("Invalid or empty TYPESAFE_API_KEY entry")
+    raise RuntimeError("Jev API key unavailable")
 
 payload = {
     "state": {"goal": "判断の目的", "constraints": ["満たすべき制約"], "facts": "比較に必要な事実"},
@@ -34,7 +56,7 @@ payload = {
 request = urllib.request.Request(
     "https://jevtypesafeai.com/api/v1/decide",
     data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
-    headers={"Authorization": "Bearer " + os.environ["JEV_API_KEY"], "Content-Type": "application/json"},
+    headers={"Authorization": "Bearer " + get_api_key(), "Content-Type": "application/json"},
     method="POST",
 )
 with urllib.request.urlopen(request, timeout=30) as response:
