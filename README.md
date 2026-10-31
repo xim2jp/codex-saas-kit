@@ -110,7 +110,7 @@ noguchi-saas-framework/
 
 ## Jev による選択の判断補助
 
-全エージェントは、複数の実行可能な候補を比較するときに `jev-decision` Skill を参照し、判断の影響や不確実性に応じて Jev を利用します。利用先は本家 API ではなく [jevtypesafeai.com](https://jevtypesafeai.com/docs) の Decision API です。利用には同サービスの API キーを実行環境の `JEV_API_KEY` に設定する必要があり、リクエストには課金が発生します。秘密情報などを送らず、結果はユーザーの指示や必須要件を優先して検証します。キーがない場合や API が使えない場合は通常の判断で進めます。
+全エージェントは、複数の実行可能な候補を比較するときに `jev-decision` Skill を参照し、判断の影響や不確実性に応じて Jev を利用します。利用先は本家 API ではなく [jevtypesafeai.com](https://jevtypesafeai.com/docs) の Decision API です。API キーは実行環境の `JEV_API_KEY` を優先し、未設定なら `~/.hermes/.env` の `TYPESAFE_API_KEY` を使用します。リクエストには課金が発生します。秘密情報などを送らず、結果はユーザーの指示や必須要件を優先して検証します。キーがない場合や API が使えない場合は通常の判断で進めます。
 
 詳細: `.agents/skills/jev-decision/SKILL.md`
 
