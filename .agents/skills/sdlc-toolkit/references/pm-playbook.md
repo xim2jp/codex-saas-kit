@@ -15,7 +15,7 @@ project-manager（Codex のルートセッション自身）がフェーズを�
 | 6 | 要件レビュー | — | requirements-reviewer | `docs/03-requirements/reviews/` | Approve 後、Handoff の完了判断材料で **Phase 7 着手判断**（着手／縮小／棚上げ／中止） |
 | 7 | 業務設計・技術選定・ブランド | business-flow-designer, tech-stack-architect, brand-design-strategist | — | `docs/10-business-design/`, `docs/11-tech-stack/`, `docs/12-brand-design/` | 3 体並列。pricing-strategist / cost-guardian はここ以降オンデマンド |
 | 8 | 同レビュー | — | planning-reviewer | 各 `reviews/` | 指摘ごとに差し戻し先を分ける |
-| 9 | 外部設計 | external-designer, marketing-site-builder（モックアップモード） | — | `docs/20-external-design/`（mockups/ 含む）, `docs/15-marketing-site/mockups/` | 2 体並列。営業ポータルモックは document-set で除外した案件以外は必須。MCP 面がある案件は mcp-server-specialist も |
+| 9 | 外部設計 | visual-director → external-designer, marketing-site-builder（モックアップモード） | — | `docs/15-marketing-site/{moodboard/,visual-style-guide.md}`、`docs/20-external-design/`（mockups/ 含む）, `docs/15-marketing-site/mockups/` | モック前に visual-director が画像と指針を準備・適合確認。その後 2 体並列。営業ポータルモックは document-set で除外した案件以外は必須。MCP 面がある案件は mcp-server-specialist も |
 | 10 | 外部設計レビュー | — | external-design-reviewer ＋ ui-mockup-reviewer（＋agent-experience-reviewer） | 各 `reviews/` | **全員 Approve** で通過。ループは reviewer ごとに独立。差し戻し先：文書・アプリ画面 → external-designer、営業ポータル → marketing-site-builder、MCP → mcp-server-specialist |
 | 11 | 内部設計 | internal-designer | — | `docs/30-internal-design/` | |
 | 12 | 内部設計レビュー | — | internal-design-reviewer | `reviews/` | |
@@ -39,7 +39,7 @@ project-manager（Codex のルートセッション自身）がフェーズを�
 | cost-guardian | 技術選定直後、運用開始後は月次 | `docs/11-tech-stack/cost-estimate.md` |
 | mcp-server-specialist / agent-experience-reviewer | AI 向け提供が決まった案件の Phase 9〜15 | `docs/20-external-design/agent-interface.md` |
 | onboarding-designer | Phase 9 で主要画面が固まった後 | `docs/20-external-design/onboarding-flow.md` |
-| visual-director → page-designer | 営業サイト本実装の前 | `docs/15-marketing-site/{moodboard/,visual-style-guide.md}` |
+| visual-director → external-designer / marketing-site-builder / page-designer | アプリ・営業サイトのモック作成前に必須。追加挿絵も方針確定後 | `docs/15-marketing-site/{moodboard/,visual-style-guide.md}` |
 | seo-specialist → blog-content-producer | 営業サイト設計以降、公開後も継続 | `docs/15-marketing-site/{seo-plan,content-calendar}.md` |
 | ad-strategy-specialist | 戦略書で広告が主戦チャネル、または SEO 飽和が見えたとき | `docs/15-marketing-site/ad-strategy.md` |
 | promo-video-producer | LP・広告に動画が要るとき | `docs/15-marketing-site/promo-video-plan.md` |

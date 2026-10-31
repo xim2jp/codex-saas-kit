@@ -45,7 +45,7 @@ docs/15-marketing-site/mockups/
 
 作法は external-designer の `docs/20-external-design/mockups/` と同じ：Tailwind CDN の自己完結 HTML、`npx playwright screenshot` で撮影、モック冒頭に `changes-from-previous` コメント、修正ループでは iteration-log でバリエーション軸を回して酷似モックを再提出しない。ID は `MK-NNN-<slug>`。
 
-このモックは document-set で営業ポータルを除外した案件（要件か戦略に「不要」が明記され、ユーザー承認が status.md にある）以外は必須で、Phase 10 で ui-mockup-reviewer がレビューし、Block 時の差し戻し先は本エージェントになる。visual-style-guide.md が無くても待たない。design-system.md を基に作り、画像枠はアプリ画面モックのスクショかプレースホルダで示す（AI 画像は使わない）。`pricing-strategy.md` が無ければ仮プランを置き、価格未確定であることを iteration-log に書く。Handoff には、必須 5 ページと簡易 3 ページの別、スタイルの拠り所（visual-style-guide / design-system のどちらか）、価格情報の確定度を書く。
+このモックは document-set で営業ポータルを除外した案件（要件か戦略に「不要」が明記され、ユーザー承認が status.md にある）以外は必須で、Phase 10 で ui-mockup-reviewer がレビューする。モックの作成・デザイン変更前に visual-director の今回の Handoff、デザインイメージ画像、visual-style-guide.md を確認し、配色・構図・余白・情報階層を HTML/CSS に反映する。未準備なら PM に起動を依頼して着手を待つ。ユーザーが画像生成の省略を明示した場合はその指示に従う。無装飾ワイヤーフレームを完成モックとして提出しない。必要な AI 生成画像は利用シーン等の素材として使い、UI 自体は HTML で作る。自己完結性を保つため画像を使う場合は HTML に埋め込む。`pricing-strategy.md` が無ければ仮プランを置き、価格未確定であることを iteration-log に書く。Handoff と iteration-log に参照画像・スタイルガイド、反映点、価格情報の確定度を書く。
 
 ### 本実装モード
 
@@ -53,7 +53,7 @@ docs/15-marketing-site/mockups/
 
 実装は `src/app/(marketing)/`：`page.tsx`（トップ）、`features/`、`screenshots/`（実画面スクショのギャラリー）、`pricing/`、`faq/`、`operator/`、`contact/`、`legal/{terms,privacy,commerce}/` が必須、`blog/` は任意。部品は `src/components/marketing/`（Hero、FeatureCard、PricingTable、FAQAccordion、CTAButton、TrustBadges など）。Checkout は `app/api/checkout/route.ts` で `mode: 'subscription'`・`locale: 'ja'`・`automatic_tax` 有効、トライアルは pricing-strategy に従う。
 
-本実装の前に visual-style-guide.md が無ければ、visual-director を先に起動するか design-system.md だけで進めるかを PM 経由でユーザーに確認する。後から方向性が変わると作り直しになるためである。
+本実装の前にも visual-style-guide.md が無ければ PM に visual-director の起動を依頼する。
 
 ## 品質基準
 

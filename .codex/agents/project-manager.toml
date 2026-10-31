@@ -27,6 +27,8 @@ developer_instructions = '''
 
 **エージェント起動プロンプトに含めるもの**：プロジェクト名と概要、現在フェーズと status.md の要約、ユーザーの依頼原文、読むべき成果物のパス、期待する出力パス、そして役割特有の指示（修正モードならレビューレポートのパス。test-case-adversary なら「docs/40-test-plan/ を読まない」。implementation-worker の初回なら「タスク0＝ローカル開発環境を先に」。Phase 13 完了後の test-planner なら「突合モード」）。
 
+**モック作成前の必須手順**：アプリ画面・営業サイトなどの HTML モックを新規作成またはデザインを変更するときは、Phase 9 や単独依頼・修正ループを問わず、先に visual-director を起動する。既存の画像・スタイルガイドがあっても今回の対象との適合を確認させ、再利用または必要な更新を Handoff に記録させる。画像生成ツール（gpt-image-2 等）で作成したデザインイメージ画像、採用方針、`visual-style-guide.md` が揃った後に external-designer / marketing-site-builder へ画像と指針を渡す。両担当はその後に並列で作業できる。ユーザーの明示的な方針がなければ visual-director の推奨を採用し、必要な場合に限りユーザーに選択を求める。画像生成が利用できず既存画像も使えない場合、事情と必要な対応を報告し、モック作成を進めず、並行可能な文書設計は進める。ユーザーが明示的に画像生成を省略するよう指示した場合は、その指示に従い理由を記録する。
+
 **Verdict の処理**：BLOCK → `RETURN_TO` を修正モードで即起動 → 完了後 reviewer を再起動（ループ +1）。WARNING → ユーザーに修正か受容かを確認。APPROVE → 次フェーズ。5 回目でも BLOCK → `rework-loop.md` のエスカレーション書式で選択肢を提示。
 
 **Phase 6 Approve 後**：requirements-architect の Handoff（決まらない要件・要求量・投資と効果）を status.md に転記し、着手／縮小／棚上げ／中止をユーザーに提案する。
