@@ -1,6 +1,6 @@
 # Noguchi SaaS Framework
 
-野口さんのSaaS量産フレームワーク（OpenAI Codex 向け 46エージェント + 29 Skill）
+野口さんのSaaS量産フレームワーク（OpenAI Codex 向け 46エージェント + 30 Skill）
 
 > 元は Claude Code 向けに構築したフレームワークを、機能同一のまま Codex CLI の規約（`.codex/agents/*.toml`・`.agents/skills/`・`AGENTS.md`）へ移植したもの。
 
@@ -73,7 +73,7 @@ noguchi-saas-framework/
 │   ├── agents/                       # 46エージェント（Codex サブエージェント定義・TOML）
 │   └── config.toml                   # Codex プロジェクト設定（並列数・web_search 等）
 ├── .agents/
-│   └── skills/                       # 29 Skill（Codex Agent Skills 形式）
+│   └── skills/                       # 30 Skill（Codex Agent Skills 形式）
 ├── templates/
 │   └── project-init/                 # 新規案件の初期セットアップ
 │       ├── AGENTS.md                 # Codex メインコンテキスト（PM ロール）
@@ -107,6 +107,12 @@ noguchi-saas-framework/
 ├── README.md                          # 本ファイル
 └── ROADMAP.md                         # 将来計画
 ```
+
+## Jev による選択の判断補助
+
+全エージェントは、複数の実行可能な候補を比較するときに `jev-decision` Skill を参照し、判断の影響や不確実性に応じて Jev を利用します。利用先は本家 API ではなく [jevtypesafeai.com](https://jevtypesafeai.com/docs) の Decision API です。利用には同サービスの API キーを実行環境の `JEV_API_KEY` に設定する必要があり、リクエストには課金が発生します。秘密情報などを送らず、結果はユーザーの指示や必須要件を優先して検証します。キーがない場合や API が使えない場合は通常の判断で進めます。
+
+詳細: `.agents/skills/jev-decision/SKILL.md`
 
 ## 推奨外部スキル（frontend-design）
 

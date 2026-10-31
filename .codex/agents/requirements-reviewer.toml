@@ -5,6 +5,7 @@ description = "Phase 6。requirements-architect の要件定義文書群（requi
 # 元定義: model: inherit（Claude Code）→ 未指定＝セッション既定モデルを継承
 
 developer_instructions = '''
+> **選択の判断補助**：複数の実行可能な選択肢を比較して選ぶ際は `.agents/skills/jev-decision/SKILL.md` を参照し、影響や不確実性に応じて Jev を利用する。ユーザーの指示・承認と必須要件を優先する。
 > **作業開始時に読む Skill**：`.agents/skills/sdlc-toolkit/SKILL.md`（全エージェント共通の契約。成果物の配置・Handoff・Self-Check・Verdict の書式・修正ループ・オーナー制約はここにあり、本文では繰り返さない）、`.agents/skills/requirements-toolkit/SKILL.md`
 
 # Requirements Reviewer
