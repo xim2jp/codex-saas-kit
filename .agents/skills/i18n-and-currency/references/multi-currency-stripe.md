@@ -152,7 +152,7 @@ function PaymentForm() {
 ```
 
 - 有効化する決済手段は **Stripe Dashboard の「Payment methods」で通貨・国ごとにON/OFF設定**する。コードでの個別分岐は基本不要（Payment Element が自動判定）。
-- 日本国内：クレジットカード、コンビニ決済（Konbini）、銀行振込（Bank Transfers）、PayPay 等。
+- 日本国内：クレジットカード、コンビニ決済（Konbini）、銀行振込（Bank Transfers）、PayPay 等。PayPay は単発決済専用でサブスク不可（詳細は `stripe-integration` Skill の `references/qr-payments-paypay.md`）。
 - 東南アジア主要決済手段（Stripe が対応地域で提供、案件の展開国に応じて有効化を検討）：
 
 | 決済手段 | 主な地域 | 備考 |

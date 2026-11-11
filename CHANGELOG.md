@@ -7,6 +7,20 @@
 
 ## [Unreleased]
 
+## [v0.21.0] - 2026-11-11
+
+Claude Code 版 v0.19.0 の移植。Stripe の QR 決済（PayPay）対応を stripe-integration Skill と payment-integration-specialist に組み込み。PayPay は単発決済専用でサブスクに使えないため、月額課金の本体はカードのままとし、期間パス・買い切り・付帯料金に限って足す方針を定めた。加算のみで v0.20.0 との互換性は維持。
+
+### Added
+
+- `stripe-integration/references/qr-payments-paypay.md`：Stripe の QR 決済（PayPay）対応。仕様と制約（単発決済専用・サブスク不可、50 円〜100 万円、手数料 3.98% / デジタルコンテンツ 9.48%、API バージョン `2026-09-30.endive` 以降）、月額 SaaS での使いどころ（期間パス／買い切り／付帯料金）、加盟店審査、Checkout 実装と Webhook 起点の利用権付与、適格請求書の注意、テスト、チェックリスト
+
+### Changed
+
+- `stripe-integration` SKILL.md：重要原則に「QR 決済（PayPay）は単発専用」を追加し、参照表・設計観点・固有チェック・アンチパターンに反映
+- `payment-integration-specialist`：QR 決済（PayPay）を担当範囲に追加（payment-design.md の記載項目、品質基準、判断の軸）
+- `stripe-integration/references/webhook-handling.md`・`i18n-and-currency/references/multi-currency-stripe.md`：PayPay の参照先を追記
+
 ## [v0.20.0] - 2026-10-24
 
 Claude Code 版 v0.16.0〜v0.18.0 の移植。v0.18.0・v0.19.0 は欠番（Claude Code 版との版数対応 +2 を保つため）。

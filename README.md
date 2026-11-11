@@ -8,7 +8,7 @@
 
 ## バージョン
 
-現在: `v0.20.0`（Claude Code 版 v0.16.0〜v0.18.0 を移植。企画・戦略の上流 4 フェーズと全フェーズ採番し直し、要件定義 Skill の IPA 準拠刷新、ハーネスの最新モデル向け刷新。Claude Code 版 v0.18.0 と同内容）
+現在: `v0.21.0`（Stripe の QR 決済（PayPay）対応を stripe-integration Skill と payment-integration-specialist に追加。PayPay は単発決済専用のため、サブスク本体はカードのまま、期間パス・買い切り・付帯料金に限って使う方針と実装パターンを収録。Claude Code 版 v0.19.0 と同内容）
 
 CHANGELOG.md で履歴を確認
 

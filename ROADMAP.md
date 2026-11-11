@@ -27,7 +27,8 @@
 - [x] v0.17.0：文書カタログ・HTML公開文書体系（htmldocs）・文書セット選択制（Claude 版 v0.15.0 の移植）
 - [x] v0.18.0・v0.19.0：欠番（Claude Code 版との版数対応 +2 を保つため。内容は v0.20.0 に含む）
 - [x] v0.20.0：Claude Code 版 v0.16.0〜v0.18.0 の移植。**企画・戦略の上流 4 フェーズ**（concept-planner / concept-reviewer / business-strategist / business-strategy-reviewer、business-strategy-toolkit Skill）と全フェーズ採番し直し（旧 1-17 → 5-21、12.5 → 16.5。BREAKING）、**要件定義 Skill の IPA 準拠刷新**（BR→SR 2 層・記述規約・BZ/UC/NFR/ROLE/用語集/OQ テンプレ）、**ハーネスの最新モデル向け刷新**（全エージェントを役割憲章に、モデル継承、共通契約の一本化、MCP 雛形、check-harness.sh）。46 エージェント + 29 Skill 体制
-- [ ] v0.21.0：案件運用の知見を統合した安定版
+- [x] v0.21.0：Claude Code 版 v0.19.0 の移植。**Stripe の QR 決済（PayPay）対応**。stripe-integration に `qr-payments-paypay.md` を追加（単発決済専用・サブスク不可の制約、期間パス／買い切り／付帯料金の使いどころ、加盟店審査、実装、テスト）、payment-integration-specialist の担当範囲に追加
+- [ ] v0.22.0：案件運用の知見を統合した安定版
 
 ※ v0.2.0〜v0.16.0 は機能拡張リリースとなった。案件知見の還流は円環構造（Phase 17）と配布機構で構造的に支援され、v0.17.0 以降で実データ還流を本格化する。
 

@@ -14,7 +14,7 @@ Webhook は Stripe からの非同期通知を受け取る要。**Source of Trut
 | `invoice.paid` | 請求成功 | ◎ |
 | `invoice.payment_failed` | 請求失敗 | ◎ |
 | `invoice.finalized` | 請求書確定 | ○ |
-| `payment_intent.succeeded` | 単発決済成功 | △（サブスクのみなら不要） |
+| `payment_intent.succeeded` | 単発決済成功 | △（サブスクのみなら不要。PayPay の期間パス等は `qr-payments-paypay.md`） |
 | `customer.updated` | 顧客情報変更 | ○ |
 | `payment_method.attached` | カード登録 | △ |
 
